@@ -3,7 +3,7 @@ import LoginPage from './components/LoginPage';
 import MainContainer from './components/MainPage/Main';
 import SignUpPage from './components/SignUpPage';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import { green, orange, red } from '@material-ui/core/colors';
+import { green, orange, red, teal } from '@material-ui/core/colors';
 import { Redirect, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 

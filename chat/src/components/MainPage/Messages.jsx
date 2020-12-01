@@ -50,7 +50,7 @@ const Messages = (props) => {
                         return (
                             <ListItem key={msg.id}>
                             <ListItemText 
-                                style={{backgroundColor: props.bgMsgColor}}
+                                style = {msg.bgColor === 'default'? {backgroundColor:''} : {backgroundColor: msg.bgColor}}
                                 align={props.currentUserName===msg.sender?"right":"left"} 
                                 primary={msg.content} 
                                 primaryTypographyProps={{color: "#000000"}}

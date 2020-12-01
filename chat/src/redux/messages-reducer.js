@@ -4,25 +4,31 @@ const SET_MESSAGES = 'SET_MESSAGES';
 const GET_MORE_MESSAGES = 'GET_MORE_MESSAGES';
 const SEND_MESSAGE = 'SEND_MESSAGE';
 const UPDATE_MESSAGES = 'UPDATE_MESSAGES';
+const FILE = 'FILE';
 
+// if msg is file bgcolor=lightblue and content is file name
+// to download you chould double click it in chat
 let initialState = {
     channelMessages: [
-        {content: 'asdasdas', time: '9:25', id: '0', sender: 'sasha'},
-        {content: 'asdasdas', time: '9:25', id: '1', sender: 'current'},
-        {content: 'asdasdas', time: '9:25', id: '2', sender: 'sasha'},
-        {content: 'asdasdas', time: '9:25', id: '3', sender: 'sasha'},
-        {content: 'asdasdas', time: '9:25', id: '4', sender: 'current'},
-        {content: 'asdasdas', time: '9:25', id: '5', sender: 'current'},
-        {content: 'asdasdas', time: '9:25', id: '6', sender: 'sasha'},
-    ]
+        {content: 'asdasdas', type: 'text', bgColor: 'default', time: '9:25', id: '0', sender: 'sasha'},
+        {content: 'asdasdas', type: 'text', bgColor: 'default', time: '9:25', id: '1', sender: 'current'},
+        {content: 'asdasdas', type: 'text', bgColor: 'default', time: '9:25', id: '2', sender: 'sasha'},
+        {content: 'asdasdas', type: 'text', bgColor: 'red', time: '9:25', id: '3', sender: 'sasha'},
+        {content: 'asdasdas', type: 'text', bgColor: 'default', time: '9:25', id: '4', sender: 'current'},
+        {content: 'asdasdas', type: 'text', bgColor: 'green', time: '9:25', id: '5', sender: 'current'},
+        {content: 'asdasdas', type: 'text', bgColor: 'default', time: '9:25', id: '6', sender: 'sasha'},
+    ],
+    file: null
 }
 
 
-const sendMessageAC = (msgContent, sendTime, msgId, sender) => {
+const sendMessageAC = (msgContent, type, bgColor, sendTime, msgId, sender) => {
     return {
         type: SEND_MESSAGE,
         message: {
             content: msgContent,
+            type,
+            bgColor,
             time: sendTime,
             id: msgId,
             sender
@@ -79,6 +85,11 @@ export const messagesReducer = (state = initialState, action) => {
                 channelMessages: [...state.channelMessages, action.message]
             }    
 
+        case FILE:
+        return {
+            ...state, 
+            file: action.file
+        }
         default:
             return state;
     }
@@ -94,7 +105,27 @@ export const sendMessageThunkCreator = (msgContent, sendTime, sender) => (dispat
         msgId = initialState.channelMessages[initialState.channelMessages.length - 1].id + 1;
     }
    
-    return dispatch(sendMessageAC(msgContent, sendTime, msgId, sender));
+    dispatch(sendMessageAC(msgContent, 'text', 'default', sendTime, msgId, sender));
+}
+
+const fileAC = (file) => {
+    return {
+        type: FILE,
+        file
+    }
+}
+
+export const uploadThunkCreator = (msgContent, sendTime, sender) => (dispatch) => {
+    //api post if successed
+    let msgId;
+    if (initialState.channelMessages.length == 0) {
+        msgId = 0;
+    } else {
+        msgId = initialState.channelMessages[initialState.channelMessages.length - 1].id + 1;
+    }
+   
+    dispatch(sendMessageAC(msgContent.name, 'file', 'aquamarine', sendTime, msgId, sender));
+    dispatch(fileAC(msgContent));
 }
 
 export const getMoreMessagesThunkCreator = () => (dispatch) => {
