@@ -96,7 +96,7 @@ export const messagesReducer = (state = initialState, action) => {
 }
 
 
-export const sendMessageThunkCreator = (msgContent, sendTime, sender) => (dispatch) => {
+export const sendMessageThunkCreator = (msgContent, sendTime, sender, bgColor) => (dispatch) => {
     //api post if successed
     let msgId;
     if (initialState.channelMessages.length == 0) {
@@ -105,7 +105,7 @@ export const sendMessageThunkCreator = (msgContent, sendTime, sender) => (dispat
         msgId = initialState.channelMessages[initialState.channelMessages.length - 1].id + 1;
     }
    
-    dispatch(sendMessageAC(msgContent, 'text', 'default', sendTime, msgId, sender));
+    dispatch(sendMessageAC(msgContent, 'text', bgColor, sendTime, msgId, sender));
 }
 
 const fileAC = (file) => {

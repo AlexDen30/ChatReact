@@ -10,7 +10,8 @@ let initialState = {
     email: null,
     login: null,
     ifFetching: false,
-    isAuthorized: false
+    isAuthorized: false,
+    //role: null
 }
 
 

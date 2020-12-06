@@ -1,13 +1,17 @@
 import React, { useRef, useState } from 'react';
 import Fab from '@material-ui/core/Fab';
-import SendIcon from '@material-ui/icons/Send';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { Create, Publish } from '@material-ui/icons';
-import { Divider } from 'material-ui';
 import { connect } from 'react-redux';
 import { sendMessageThunkCreator, uploadThunkCreator } from '../../redux/messages-reducer';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
+import {ChromePicker} from 'react-color';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -22,6 +26,16 @@ function InputText(props) {
     const [input, setInput] = useState("");
     const [blockInput, setBlockInput] = useState(true);
     const [file, setFile] = useState(null);
+    const [msgColor, setMsgColor] = useState('#F00FFF');
+    const [isOpenColorDialog, setOpenColorDialog] = useState(false);
+
+    const handleClickOpenColorDialog = () => {
+        setOpenColorDialog(true);
+      };
+    
+      const handleCloseColorDialog = () => {
+        setOpenColorDialog(false);
+      };
 
     const handleInputChange = (e) => {
         const value = e.target.value;
@@ -33,12 +47,11 @@ function InputText(props) {
     const handleSendTextMessage = () => {
         let date = new Date();
         let stringToSend = date.getHours() + ':' + date.getMinutes() + ' - ' + date.getDay() + '.' + date.getMonth() + '.' + date.getFullYear();
-        props.sendMessage(input, stringToSend, props.userName);
+        props.sendMessage(input, stringToSend, props.userName, msgColor);
         setInput("");
     }
 
     const handleSendFileMessage = () => {
-        //debugger;
         let date = new Date();
         let stringToSend = date.getHours() + ':' + date.getMinutes() + ' - ' + date.getDay() + '.' + date.getMonth() + '.' + date.getFullYear();
         props.sendFile(file, stringToSend, props.userName);
@@ -90,8 +103,11 @@ function InputText(props) {
                 <Grid xs={1} align="right">
                     <Fab 
                         disabled={input==="" ? true : false} 
-                        color="primary" aria-label="add" 
-                        onClick={file ? handleSendFileMessage : handleSendTextMessage}>
+                        color="primary" 
+                        aria-label="add" 
+                        onClick={file ? handleSendFileMessage : handleSendTextMessage}
+                        onContextMenu={handleClickOpenColorDialog}
+                    >
                             <Create />
                     </Fab>
                 </Grid>
@@ -102,6 +118,29 @@ function InputText(props) {
                 onChange={handleUploadChange} 
                 style={{display:'none'}} 
             />
+
+            <Dialog
+                open={isOpenColorDialog}
+                onClose={handleCloseColorDialog}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Set message color:"}</DialogTitle>
+                <DialogContent>
+                    <ChromePicker 
+                        color={msgColor} 
+                        onChange={updatedColor => setMsgColor(updatedColor.hex)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={handleCloseColorDialog} color="primary">
+                    Close
+                </Button>
+                <Button onClick={handleCloseColorDialog} color="primary" autoFocus>
+                    Ok
+                </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     )
 }
@@ -115,8 +154,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        sendMessage: (msgContent, sendTime, sender) => {
-            dispatch(sendMessageThunkCreator(msgContent, sendTime, sender));
+        sendMessage: (msgContent, sendTime, sender, bgColor) => {
+            dispatch(sendMessageThunkCreator(msgContent, sendTime, sender, bgColor));
         },
         sendFile: (msgContent, sendTime, sender) => {
             dispatch(uploadThunkCreator(msgContent, sendTime, sender));
