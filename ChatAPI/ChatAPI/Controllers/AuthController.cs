@@ -21,21 +21,21 @@ namespace ChatAPI.Controllers
         }
 
         // GET: api/Auth
-        [HttpGet]
+        [HttpGet(Name = "GetAllUsers")]
         public IEnumerable<UsersModel> Get()
         {
             return usersRep.GetUsers();
         }
 
         // GET: api/Auth/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}", Name = "GetUser")]
         public UsersModel Get(int id)
         {
             return usersRep.GetUser(id);
         }
 
         // POST: api/Auth
-        [HttpPost]
+        [HttpPost(Name ="PostUser")]
         public void Post([FromBody] UsersModel value)
         {
             if(ModelState.IsValid)
@@ -45,7 +45,7 @@ namespace ChatAPI.Controllers
         }
 
         // PUT: api/Auth/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}", Name ="UpdateUser")]
         public void Put(int id, [FromBody] string value)
         {
             
@@ -56,7 +56,7 @@ namespace ChatAPI.Controllers
         }
 
         // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}", Name = "DeleteUser")]
         public void Delete(int id)
         {
             usersRep.DeleteUser(id);

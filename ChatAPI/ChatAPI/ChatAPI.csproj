@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\ChannelsModel\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

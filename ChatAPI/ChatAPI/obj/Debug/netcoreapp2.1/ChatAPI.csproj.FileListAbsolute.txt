@@ -12,3 +12,17 @@ E:\Projects\ChatAPI\ChatAPI\bin\Debug\netcoreapp2.1\ChatAPI.pdb
 E:\Projects\ChatAPI\ChatAPI\obj\Debug\netcoreapp2.1\ChatAPI.dll
 E:\Projects\ChatAPI\ChatAPI\obj\Debug\netcoreapp2.1\ChatAPI.pdb
 E:\Projects\ChatAPI\ChatAPI\obj\Debug\netcoreapp2.1\ChatAPI.csprojAssemblyReference.cache
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\bin\Debug\netcoreapp2.1\ChatAPI.deps.json
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\bin\Debug\netcoreapp2.1\ChatAPI.runtimeconfig.json
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\bin\Debug\netcoreapp2.1\ChatAPI.runtimeconfig.dev.json
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\bin\Debug\netcoreapp2.1\ChatAPI.dll
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\bin\Debug\netcoreapp2.1\ChatAPI.pdb
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\obj\Debug\netcoreapp2.1\ChatAPI.csproj.CoreCompileInputs.cache
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\obj\Debug\netcoreapp2.1\ChatAPI.RazorAssemblyInfo.cache
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\obj\Debug\netcoreapp2.1\ChatAPI.RazorAssemblyInfo.cs
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\obj\Debug\netcoreapp2.1\ChatAPI.AssemblyInfoInputs.cache
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\obj\Debug\netcoreapp2.1\ChatAPI.AssemblyInfo.cs
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\obj\Debug\netcoreapp2.1\ChatAPI.RazorTargetAssemblyInfo.cache
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\obj\Debug\netcoreapp2.1\ChatAPI.dll
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\obj\Debug\netcoreapp2.1\ChatAPI.pdb
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\obj\Debug\netcoreapp2.1\ChatAPI.csprojAssemblyReference.cache

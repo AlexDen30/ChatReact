@@ -12599,11 +12599,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Projects\\ChatAPI\\ChatAPI\\ChatAPI.csproj",
+      "projectUniqueName": "E:\\Projects\\ChatAPIRep\\alexander-denisov\\ChatAPI\\ChatAPI\\ChatAPI.csproj",
       "projectName": "ChatAPI",
-      "projectPath": "E:\\Projects\\ChatAPI\\ChatAPI\\ChatAPI.csproj",
+      "projectPath": "E:\\Projects\\ChatAPIRep\\alexander-denisov\\ChatAPI\\ChatAPI\\ChatAPI.csproj",
       "packagesPath": "C:\\Users\\Пользователь\\.nuget\\packages\\",
-      "outputPath": "E:\\Projects\\ChatAPI\\ChatAPI\\obj\\",
+      "outputPath": "E:\\Projects\\ChatAPIRep\\alexander-denisov\\ChatAPI\\ChatAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
