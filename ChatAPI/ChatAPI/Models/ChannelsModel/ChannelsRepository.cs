@@ -23,7 +23,8 @@ namespace ChatAPI.Models.ChannelsModel
             using (OracleConnection db = new OracleConnection(connectionString))
             {
                 string sql = "SELECT channel_id AS ChannelId, name, theme, " +
-                    "creation_time AS CreationTime FROM Channels WHERE channel_id IN " +
+                    "creation_time AS CreationTime, count_of_messages AS CountOfMessages " +
+                    "FROM Channels WHERE channel_id IN " +
                     "(SELECT channel_id FROM User_has_channel WHERE user_id = :ID)";
 
                 db.Open();
@@ -36,7 +37,8 @@ namespace ChatAPI.Models.ChannelsModel
             using (OracleConnection db = new OracleConnection(connectionString))
             {
                 string sql = "SELECT channel_id AS ChannelId, name, theme, " +
-                    "creation_time AS CreationTime FROM Channels ";
+                    "creation_time AS CreationTime, count_of_messages AS CountOfMessages " +
+                    "FROM Channels ";
 
                 db.Open();
                 return db.Query<ChannelsModel>(sql);
@@ -48,7 +50,8 @@ namespace ChatAPI.Models.ChannelsModel
             using (OracleConnection db = new OracleConnection(connectionString))
             {
                 string sql = "SELECT channel_id AS ChannelId, name, theme, " +
-                    "creation_time AS CreationTime FROM Channels WHERE channel_id = :ID ";
+                    "creation_time AS CreationTime, count_of_messages AS CountOfMessages " +
+                    "FROM Channels WHERE channel_id = :ID ";
 
                 db.Open();
                 return db.Query<ChannelsModel>(sql, new { ID = channelId }).FirstOrDefault();
@@ -59,8 +62,8 @@ namespace ChatAPI.Models.ChannelsModel
         {
             using (OracleConnection db = new OracleConnection(connectionString))
             {
-                string sql = "INSERT INTO Channels(name, theme, creation_time) " +
-                    "VALUES(:Name,:Theme, to_date(:CreationTime, \'dd.MM.yyyy hh24:mi:ss\'))";
+                string sql = "INSERT INTO Channels(name, theme, creation_time, count_of_messages) " +
+                    "VALUES(:Name,:Theme, to_date(:CreationTime, \'dd.MM.yyyy hh24:mi:ss\'), :CountOfMessages)";
 
 
                 db.Open();

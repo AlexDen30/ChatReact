@@ -17,5 +17,7 @@ namespace ChatAPI.Models.ChannelsModel
         public string Theme { get; set; }
 
         public string CreationTime { get; set; }
+
+        public int CountOfMessages { get; set; }
     }
 }

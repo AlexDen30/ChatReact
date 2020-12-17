@@ -26,3 +26,7 @@ E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\obj\Debug\netcoreapp2.1
 E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\obj\Debug\netcoreapp2.1\ChatAPI.dll
 E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\obj\Debug\netcoreapp2.1\ChatAPI.pdb
 E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\obj\Debug\netcoreapp2.1\ChatAPI.csprojAssemblyReference.cache
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\bin\Debug\netcoreapp2.1\appsettings.Development.json
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\bin\Debug\netcoreapp2.1\appsettings.json
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\bin\Debug\netcoreapp2.1\Properties\launchSettings.json
+E:\Projects\ChatAPIRep\alexander-denisov\ChatAPI\ChatAPI\obj\Debug\netcoreapp2.1\ChatAPI.genruntimeconfig.cache
