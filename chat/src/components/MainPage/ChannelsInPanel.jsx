@@ -9,7 +9,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { ListSubheader } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
-import { leaveChannelThunkCreator, selectChannelAC, setChannelsThunkCreator } from '../../redux/channelsPanel-reducer';
+import { deleteChannelThunkCreator, leaveChannelThunkCreator, selectChannelAC, setChannelsThunkCreator } from '../../redux/channelsPanel-reducer';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import AlertQuestion from '../utilityComponents/AlertQuestion';
@@ -70,7 +70,7 @@ const ChannelsInPanel = (props) => {
                                     key={ch.id} 
                                 >
                                     <ListItemIcon>
-                                        <Avatar alt={ch.name} src={ch.photoURL} />
+                                        <Avatar alt={ch.name}  />
                                     </ListItemIcon>
                                     <ListItemText primary={ch.name}>{ch.name}</ListItemText>
                                 </ListItem>
@@ -92,7 +92,9 @@ const ChannelsInPanelContainer = (props) => {
 
     const [state, setState] = useState(initialState);
 
-    const {openAlert, setOpenAlert} = useAlertQuestion();
+    const [openAlertleave, setOpenAlertLeave] = useState(false);
+
+    const [openAlertDelete, setOpenAlertDelete] = useState(false);
 
     const [idOnMenu, setIdOnMenu] = useState(null);
 
@@ -111,7 +113,10 @@ const ChannelsInPanelContainer = (props) => {
 
         switch (result) {
             case "LeaveChannel":
-                setOpenAlert(true);
+                setOpenAlertLeave(true);
+                break;
+            case "DeleteChannel":
+                setOpenAlertDelete(true);
                 break;
             default: 
                 break;
@@ -119,14 +124,25 @@ const ChannelsInPanelContainer = (props) => {
         
     }
 
-    const handleCloseAlert = (result) => {
-        setOpenAlert(false);
-        debugger;
+    const handleCloseAlertLeave = (result) => {
+        setOpenAlertLeave(false);
+
         if (result) {
             if (idOnMenu === props.selectedChannel) {
                 props.selectChannel(null);
             }
             props.leaveChannel(idOnMenu);
+        }
+    };
+
+    const handleCloseAlertDelete = (result) => {
+        setOpenAlertDelete(false);
+        
+        if (result) {
+            if (idOnMenu === props.selectedChannel) {
+                props.selectChannel(null);
+            }
+            props.deleteChannel(idOnMenu);
         }
     };
 
@@ -152,11 +168,18 @@ const ChannelsInPanelContainer = (props) => {
                 }
             >
                 <MenuItem onClick={() => handleCloseMenu("LeaveChannel")}>Leave</MenuItem>
+                <MenuItem onClick={() => handleCloseMenu("DeleteChannel")}>Delete</MenuItem>
             </Menu>
             <AlertQuestion 
-                open={openAlert} 
-                handleClose={handleCloseAlert}
+                open={openAlertleave} 
+                handleClose={handleCloseAlertLeave}
                 title={"Do you really want to leave this channel?"}
+                linkTo = {idOnMenu === props.selectedChannel ? "/main" : null}
+            />
+            <AlertQuestion 
+                open={openAlertDelete} 
+                handleClose={handleCloseAlertDelete}
+                title={"Do you really want to DELETE this channel?"}
                 linkTo = {idOnMenu === props.selectedChannel ? "/main" : null}
             />
         </div>
@@ -186,6 +209,10 @@ const mapDispatchToProps = (dispatch) => {
         leaveChannel: (leavingId) => {
             return dispatch(leaveChannelThunkCreator(leavingId));
         },
+
+        deleteChannel: (deletingId) => {
+            return dispatch(deleteChannelThunkCreator(deletingId));
+        }
     }
 }
 

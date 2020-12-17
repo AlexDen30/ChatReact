@@ -7,6 +7,9 @@ const TOOGLE_IS_FETCHING = 'TOOGLE_IS_FETCHING';
 let initialState = {
     userId: null,
     userName: null,
+    firstName: null,
+    lastName: null,
+    birthDate: null,
     email: null,
     login: null,
     ifFetching: false,

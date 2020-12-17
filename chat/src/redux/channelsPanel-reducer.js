@@ -6,19 +6,19 @@ const ADD_CHANNEL = 'ADD_CHANNEL';
 
 const initialState = {
     channels: [
-      { name: 'Vovs122', id: '1', creationTime: 'date', theme: '9000', photoURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/1200px-User_font_awesome.svg.png' },
-      { name: 'Masasda1ha', id: '2', creationTime: 'date', theme: 'efww', photoURL: '' },
-      { name: 'qwdqa12', id: '3', creationTime: 'date', theme: '111', photoURL: '' },
-      { name: 'sd2', id: '4', creationTime: 'date', theme: 'a6767', photoURL: ''},
-      { name: 'aasQQQ12', id: '5', creationTime: 'date', theme: '4t54', photoURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/1200px-User_font_awesome.svg.png' },
-      { name: 'Kobra212', id: '6', creationTime: 'date', theme: 'erwewe', photoURL: '' },
-      { name: 'qwddddd1', id: '7', creationTime: 'date', theme: 'gg', photoURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/1200px-User_font_awesome.svg.png'},
-      { name: 'asdaaa', id: '8', creationTime: 'date', theme: 'a', photoURL: '' },
-      { name: 'qwddPPPP1', id: '9', creationTime: 'date', theme: 'addds', photoURL: ''},
-      { name: 'yyyy', id: '10', creationTime: 'date', theme: '343', photoURL: ''},
-      { name: 'erer', id: '11', creationTime: 'date', theme: '222', photoURL: ''},
-      { name: 'vcbvcbv', id: '12', creationTime: 'date', theme: 'dfdfd', photoURL: ''},
-      { name: 'sfdsdf', id: '13', creationTime: 'date', theme: 'asas', photoURL: ''},
+      { name: 'Vovs122', id: '1', creationTime: 'date', theme: '9000', countOfMessages: '0'},
+      { name: 'Masasda1ha', id: '2', creationTime: 'date', theme: 'efww', countOfMessages: '0'},
+      { name: 'qwdqa12', id: '3', creationTime: 'date', theme: '111',  countOfMessages: '0'},
+      { name: 'sd2', id: '4', creationTime: 'date', theme: 'a6767', countOfMessages: '0'},
+      { name: 'aasQQQ12', id: '5', creationTime: 'date', theme: '4t54',  countOfMessages: '0'},
+      { name: 'Kobra212', id: '6', creationTime: 'date', theme: 'erwewe', countOfMessages: '0'},
+      { name: 'qwddddd1', id: '7', creationTime: 'date', theme: 'gg', countOfMessages: '0'},
+      { name: 'asdaaa', id: '8', creationTime: 'date', theme: 'a', countOfMessages: '0'},
+      { name: 'qwddPPPP1', id: '9', creationTime: 'date', theme: 'addds', countOfMessages: '0'},
+      { name: 'yyyy', id: '10', creationTime: 'date', theme: '343', countOfMessages: '0'},
+      { name: 'erer', id: '11', creationTime: 'date', theme: '222', countOfMessages: '0'},
+      { name: 'vcbvcbv', id: '12', creationTime: 'date', theme: 'dfdfd', countOfMessages: '0'},
+      { name: 'sfdsdf', id: '13', creationTime: 'date', theme: 'asas', countOfMessages: '0'},
     ],
     selectedChannelId: null,
     isAdmin: false
@@ -74,6 +74,7 @@ export const channelsPanelReducer = (state = initialState, action) => {
                 selectedChannelId: action.selectedChannelId
             }
 
+
         case LEAVE_CHANNEL:
 
             const index = state.channels.findIndex((ch) => ch.id === action.leavingId);
@@ -92,6 +93,11 @@ export const leaveChannelThunkCreator = (leavingId) => (dispatch) => {
     dispatch(leaveChannelAC(leavingId)); //or bad request
 }
 
+export const deleteChannelThunkCreator = (deletingId) => (dispatch) => {
+    //api deletingId---delete--->
+    dispatch(leaveChannelAC(deletingId)); //or bad request
+}
+
 export const setChannelsThunkCreator = (userId) => (dispatch) => {
     //api userdId --get--> channels
     return dispatch(setChannelsAC(initialState.channels));
@@ -102,4 +108,7 @@ export const addChannelThunkCreator = (addingId) => (dispatch) => {
     //return dispatch(getMoreMessagesAC(msgs));
 }
 
-
+export const CreateChannelThunkCreator = (name, theme, creationTime) => (dispatch) => {
+    //api addingId-----post--->
+    return dispatch(addChannelAC({name, id : initialState.channels.length + 1, creationTime, theme, countOfMessages:0}));
+}
