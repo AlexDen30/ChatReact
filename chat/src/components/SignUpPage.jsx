@@ -8,6 +8,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { NavLink, Redirect } from 'react-router-dom';
 import { useForm } from './hooks/useForm';
+import { connect } from 'react-redux';
+import { signupThunkCreator } from '../redux/authorization-reducer';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -131,6 +133,7 @@ const LoginForm = (props) => {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={props.handleSubmit}
           >
             Sign Up
           </Button>
@@ -189,6 +192,13 @@ const SignUpPage = (props) => {
 
   const { values, setValues, errors, setErrors, handleInputChange } = useForm(initialFormValues, true, validate);
 
+  const handleSubmit = () => {
+    if (validate()) {
+      //userName, email, firstName, secondName, birthDate, password
+      props.signup(values.userName, values.email, values.firstName, values.lastName, values.birthDate, values.password);
+    }
+  }
+
   if (props.isAuthorized) {
     return (<Redirect to={'/main'} />);
   }
@@ -199,10 +209,17 @@ const SignUpPage = (props) => {
       handleInputChange={handleInputChange}
       values={values}
       errors={errors}
+      handleSubmit={handleSubmit}
     />
   );
 }
 
+const mapDispatchToProps = () => {
+  return {
+      signup: (userName, email, firstName, secondName, birthDate, password) => {
+          signupThunkCreator(userName, email, firstName, secondName, birthDate, password);
+      }
+  }
+}
 
-
-export default SignUpPage;
+export default connect(null, mapDispatchToProps)(SignUpPage);

@@ -18,5 +18,19 @@ export const authAPI = {
 
     logout () {
         return instance.delete(`Auth/logout`);
+    },
+
+    signup (userName, email, firstName, secondName, birthDate, password) {
+        return instance.post('Auth/signup', {
+            user : {
+                userName,
+                email,
+                role : "user",
+                firstName,
+                secondName,
+                birthDate
+            },
+            password
+        });
     }
 } 

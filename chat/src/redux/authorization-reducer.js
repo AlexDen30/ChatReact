@@ -100,12 +100,24 @@ export const loginThunkCreator = (email, password) => (dispatch) => {
 
 export const logoutThunkCreator = () => (dispatch) => {
     
-        authAPI.logout()
-            .then(response => {
-                if (response.statusText === 'OK') {
-                    dispatch(setAuthUserDataAC(null, null, null, null, null, null, false));
-                }
-            });
+    authAPI.logout()
+        .then(response => {
+            if (response.statusText === 'OK') {
+                dispatch(setAuthUserDataAC(null, null, null, null, null, null, false));
+            }
+        });
     
 }
 
+export const signupThunkCreator = (userName, email, firstName, secondName, birthDate, password) => {
+   
+    authAPI.signup(userName, email, firstName, secondName, birthDate, password)
+        .then(response => {
+            if (response.statusText === 'OK') {
+                alert("Account created! Now you can signin");
+            } else {
+                alert("Invalid data");
+            }
+        });
+
+}
