@@ -20,31 +20,79 @@ namespace ChatAPI.Controllers
             usersRep = new UsersRepository();
         }
 
-        // GET: api/Auth
+        
         [HttpGet(Name = "GetAllUsers")]
         public IEnumerable<UsersModel> Get()
         {
             return usersRep.GetUsers();
         }
 
-        // GET: api/Auth/5
-        [HttpGet("{id}", Name = "GetUser")]
-        public UsersModel Get(int id)
+        
+        [HttpGet("me", Name = "GetUserData")]
+        public UsersModel GetUserData()
         {
+            int id = Convert.ToInt32(Request.Cookies["userId"]);
+
             return usersRep.GetUser(id);
         }
 
-        // POST: api/Auth
-        [HttpPost(Name ="PostUser")]
-        public void Post([FromBody] UsersModel value)
+
+        public class DataForSignUp
         {
-            if(ModelState.IsValid)
-            {
-                usersRep.AddUser(value);
-            }
+            public UsersModel User{ get; set; }
+
+            public string Password{ get; set; }
+        }
+        
+        [HttpPost("signup",Name ="PostUser")]
+        public void PostUser([FromBody] DataForSignUp data)
+        {
+            data.User.Role = "user";
+           
+            usersRep.AddUser(data.User, data.Password);
+
         }
 
-        // PUT: api/Auth/5
+        public class AuthData
+        {
+            public string Email{ get; set; }
+
+            public string Password{ get; set; }
+        }
+
+        public class LoginResponse
+        {
+            public string RequestResult{ get; set; }
+        }
+
+        [HttpPost("login", Name = "AuthUser")]
+        public LoginResponse Login([FromBody] AuthData authData)
+        {
+
+            int reqData = usersRep.GetUserIdForAuth(authData.Email, authData.Password);
+            LoginResponse resp = new LoginResponse();
+            
+
+            if (reqData == 0)
+            {
+                resp.RequestResult = "invalid";
+                return resp; 
+            }
+
+            Response.Cookies.Append("userId", reqData.ToString());
+            resp.RequestResult = "success";
+
+            return resp;
+        }
+
+        // not for the client app
+        [HttpDelete("logout", Name = "LogoutUser")]
+        public void Logout()
+        {
+            Response.Cookies.Delete("userId");
+        }
+
+        // not for the client app
         [HttpPut("{id}", Name ="UpdateUser")]
         public void Put(int id, [FromBody] string value)
         {
@@ -55,7 +103,7 @@ namespace ChatAPI.Controllers
             }
         }
 
-        // DELETE: api/ApiWithActions/5
+        // not for the client app
         [HttpDelete("{id}", Name = "DeleteUser")]
         public void Delete(int id)
         {

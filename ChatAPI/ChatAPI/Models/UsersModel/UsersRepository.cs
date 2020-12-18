@@ -12,7 +12,7 @@ namespace ChatAPI.Models.UsersModel
     public class UsersRepository
     {
 
-        string connectionString = null;
+        readonly string connectionString = null;
 
         public UsersRepository()
         {
@@ -23,13 +23,12 @@ namespace ChatAPI.Models.UsersModel
         {
             using (OracleConnection db = new OracleConnection(connectionString))
             {
-                string sql = "SELECT user_id AS userId, user_name AS userName, email, " +
-                    "login, password, role, first_name AS firstName , " +
+                string sql = "SELECT user_name AS userName, email, " +
+                    "role, first_name AS firstName , " +
                     "second_name AS secondName, birth_date AS birthDate " +
                     "FROM ChatUsers";
 
                 db.Open();
-                //var sa = db.State.ToString();
                 return db.Query<UsersModel>(sql);
             }
         }
@@ -38,8 +37,8 @@ namespace ChatAPI.Models.UsersModel
         {
             using (OracleConnection db = new OracleConnection(connectionString))
             {
-                string sql = "SELECT user_id AS userId, user_name AS userName, email, " +
-                    "login, password, role, first_name AS firstName , " +
+                string sql = "SELECT user_name AS userName, email, " +
+                    "role, first_name AS firstName , " +
                     "second_name AS secondName, birth_date AS birthDate " +
                     "FROM ChatUsers " +
                     "WHERE user_id = :ID";
@@ -50,18 +49,31 @@ namespace ChatAPI.Models.UsersModel
             }
         }
 
-
-        public void AddUser(UsersModel user)
+        public int GetUserIdForAuth(string email, string password)
         {
             using (OracleConnection db = new OracleConnection(connectionString))
             {
-                string sql = "INSERT INTO ChatUsers(user_name, email, login, password, role, first_name, second_name, birth_date) " +
-                    "VALUES(:UserName,:Email ,:Login ,:Password ,:Role ,:FirstName ,:SecondName , to_date(:BirthDate, \'dd.MM.yyyy\'))";
+                string sql = "SELECT nvl(user_id, 0) FROM ChatUsers " +
+                    "WHERE email = :Email AND password = :Pass";
+                    
+                var param = new { Email = email, Pass = password};
+                db.Open();
+
+                return db.Query<int>(sql, param).FirstOrDefault();
+            }
+        }
+
+        public void AddUser(UsersModel user, string password)
+        {
+            using (OracleConnection db = new OracleConnection(connectionString))
+            {
+                string sql = "INSERT INTO ChatUsers(user_name, email, password, role, first_name, second_name, birth_date) " +
+                    "VALUES(:UserName,:Email ,:Password ,:Role ,:FirstName ,:SecondName , to_date(:BirthDate, \'dd.MM.yyyy\'))";
 
                 
                 db.Open();
 
-                db.Execute(sql, user);
+                db.Execute(sql, new { user.UserName, user.Email, Password = password, user.Role, user.FirstName, user.SecondName, user.BirthDate });
             }
         }
 
