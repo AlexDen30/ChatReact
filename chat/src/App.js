@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import LoginPage from './components/LoginPage';
 import MainContainer from './components/MainPage/Main';
 import SignUpPage from './components/SignUpPage';
@@ -6,6 +6,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { green, orange, red, teal } from '@material-ui/core/colors';
 import { Redirect, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { setAuthUserDataThunkCreator } from './redux/authorization-reducer';
 
 const theme = createMuiTheme({
   palette: {
@@ -25,6 +26,10 @@ const theme = createMuiTheme({
 })
 
 const App = (props) => {
+
+  useEffect(() => {
+    props.setAuthData(); 
+  }, [])
 
   return (
     <div>
@@ -56,6 +61,12 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, null)(App);
-//
-//<SignUpPage/>
+const mapDispatchToProps = (dispatch) => {
+  return {
+      setAuthData: () => {
+          dispatch(setAuthUserDataThunkCreator());
+      }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

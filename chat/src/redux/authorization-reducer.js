@@ -1,20 +1,19 @@
 //import { authAPI } from "../api/api";
 //import { stopSubmit } from 'redux-form';
 
+import { authAPI } from "../api/api";
+
 const SET_USER_DATA = 'SET_USER_DATA'
 const TOOGLE_IS_FETCHING = 'TOOGLE_IS_FETCHING';
 
 let initialState = {
-    userId: null,
     userName: null,
     firstName: null,
     lastName: null,
     birthDate: null,
     email: null,
-    login: null,
-    ifFetching: false,
     isAuthorized: false,
-    //role: null
+    role: null
 }
 
 
@@ -25,14 +24,16 @@ export const isFetchingAC = (isFetching) => {
     }
 }
 
-export const setAuthUserData = (userId, userName, email, login, isAuthorized) => {
+const setAuthUserDataAC = (userName, email, role, firstName, secondName, birthDate, isAuthorized) => {
     return {
         type: SET_USER_DATA,
         payload: {
-            userId,
             userName,
             email,
-            login,
+            role,
+            firstName,
+            secondName,
+            birthDate,
             isAuthorized
         }
     }
@@ -61,50 +62,50 @@ export const authorizationReducer = (state = initialState, action) => {
 
 export const setAuthUserDataThunkCreator = () => (dispatch) => {
 
-    // return authAPI.me()
-    //     .then(data => {
-    //         if (data.resultCode === 0) {
-    //             dispatch(setAuthUserData(data.data.id, data.data.email, data.data.login, true));
-    //         }
-    //     });
-    return dispatch(setAuthUserData('data.id', 'current',' data.email', 'data.login', true));
+    
+    return authAPI.me()
+        .then(data => {
+            if (data.statusText === 'OK') {
+                dispatch(setAuthUserDataAC(data.data.userName, data.data.email, data.data.role, 
+                    data.data.firstName, data.data.secondName, data.data.birthDate, true));
+            }
+        });
+   //return dispatch(setAuthUserData('data.id', 'current',' data.email', 'data.login', true));
 }
 
-export const setAuthGuestDataThunkCreator = () => (dispatch) => {
+// export const setAuthGuestDataThunkCreator = () => (dispatch) => {
 
-    return dispatch(setAuthUserData('guest', 'current','----', 'guest', true));
-}
+//     return dispatch(setAuthUserData('guest', 'current','----', 'guest', true));
+// }
 
 export const loginThunkCreator = (email, password) => (dispatch) => {
 
-    // authAPI.login(email, password, rememberMe)
-    //     .then(response => {
-    //         if (response.data.resultCode === 0) {
-    //             dispatch(setAuthUserDataThunkCreator());
-    //         } else {
-    //             let message = response.data.messages.length > 0 ? response.data.messages[0] : 'Err';
-    //             dispatch(stopSubmit("login", { _error: message }));
-    //         }
-    //     });
-    if (email === 'guest' && password === 'guest') {
-        dispatch(setAuthGuestDataThunkCreator());
-    } else {
-        dispatch(setAuthUserDataThunkCreator());
-    }
+    authAPI.login(email, password)
+        .then(response => {
+            
+            if (response.statusText === 'OK') {
+                dispatch(setAuthUserDataThunkCreator());
+            } else {
+                alert("Wrong email or password!");
+            }
+        });
+    // if (email === 'guest' && password === 'guest') {
+    //     dispatch(setAuthGuestDataThunkCreator());
+    // } else {
+    //     dispatch(setAuthUserDataThunkCreator());
+    // }
 
 }
 
 
 export const logoutThunkCreator = () => (dispatch) => {
-
-    // return (dispatch) => {
-    //     authAPI.logout()
-    //         .then(response => {
-    //             if (response.data.resultCode === 0) {
-    //                 dispatch(setAuthUserData(null, null, null, false));
-    //             }
-    //         });
-    // }
-    dispatch(setAuthUserData(null, null, null,  null, false));
+    
+        authAPI.logout()
+            .then(response => {
+                if (response.statusText === 'OK') {
+                    dispatch(setAuthUserDataAC(null, null, null, null, null, null, false));
+                }
+            });
+    
 }
 

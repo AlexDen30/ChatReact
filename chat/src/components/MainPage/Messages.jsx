@@ -65,63 +65,6 @@ const Messages = (props) => {
     );
 }
 
-// const initialState = {
-//     mouseX: null,
-//     mouseY: null,
-// };
-
-// const MessagesContainer = (props) => {
-
-//     const [state, setState] = useState(initialState);
-//     const [bgMsgColor, setBgMsgColor] = useState("white");
-
-//     const handleChannelMenu = (channelId, event) => {
-//         event.preventDefault();
-//         //setIdOnMenu(channelId);
-//         setState({
-//             mouseX: event.clientX,
-//             mouseY: event.clientY,
-//         })
-//     }
-
-//     const handleCloseMenu = (result) => {
-
-//         setState(initialState);
-
-//         switch (result) {
-//             case "LeaveChannel":
-//                 //setOpenAlert(true);
-//                 break;
-//             default: 
-//                 break;
-//         }
-        
-//     }
-    
-//     return(
-//         <div>
-//             <Messages 
-//                 setMessages={props.setMessages}
-//                 messages={props.messages}
-//                 currentUserName={props.currentUserName}
-//                 handleChannelMenu={handleChannelMenu}
-//             />
-//             <Menu
-//                 keepMounted
-//                 open={state.mouseY !== null}
-//                 onClose={handleCloseMenu}
-//                 anchorReference="anchorPosition"
-//                 anchorPosition={
-//                 state.mouseY !== null && state.mouseX !== null
-//                     ? { top: state.mouseY, left: state.mouseX }
-//                     : undefined
-//                 }
-//             >
-//                 <MenuItem onClick={() => handleCloseMenu("LeaveChannel")}>Leave</MenuItem>
-//             </Menu>
-//         </div>
-//     )
-// }
 
 const mapStateToProps = (state) => {
     return {
