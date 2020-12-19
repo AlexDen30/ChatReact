@@ -34,3 +34,31 @@ export const authAPI = {
         });
     }
 } 
+
+
+export const channelsAPI = {
+    userChannels () {
+        return instance.get(`Channels/userChannels`);
+    },
+
+    createChannel (name, theme, creationTime) {
+        return instance.post(`Channels`, {name, theme, creationTime});
+    },
+
+    joinChannel (channelId) {
+        debugger;
+        return instance.post(`Channels/userChannels/join?channel=${channelId}`, {});
+    },
+
+    leaveChannel (channelId) {
+        return instance.delete(`Channels/userChannels/leave?channel=${channelId}`);
+    },
+
+    deleteChannel (channelId) {
+        return instance.delete(`Channels/${channelId}`);
+    },
+
+    getChannel (channelId) {
+        return instance.get(`Channels/${channelId}`);
+    }
+} 

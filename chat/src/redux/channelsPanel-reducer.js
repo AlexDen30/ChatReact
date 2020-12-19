@@ -1,8 +1,9 @@
+import { channelsAPI } from "../api/api";
 
 const SET_CHANNELS = 'SET_CHANNELS';
+const ADD_CHANNEL = 'JOIN_CHANNEL';
 const SELECT_CHANNEL = 'SELECT_CHANNEL';
 const LEAVE_CHANNEL = 'LEAVE_CHANNEL'; 
-const ADD_CHANNEL = 'ADD_CHANNEL'; 
 
 const initialState = {
     channels: [
@@ -76,8 +77,8 @@ export const channelsPanelReducer = (state = initialState, action) => {
 
 
         case LEAVE_CHANNEL:
-
-            const index = state.channels.findIndex((ch) => ch.id === action.leavingId);
+            debugger;
+            const index = state.channels.findIndex((ch) => ch.channelId === action.leavingId);
             return {
                 ...state,
                 channels: index === 0 ? [...state.channels.slice(1)] : [...state.channels.slice(0, index), ...state.channels.slice(index + 1)],
@@ -89,26 +90,86 @@ export const channelsPanelReducer = (state = initialState, action) => {
 }
 
 export const leaveChannelThunkCreator = (leavingId) => (dispatch) => {
-    //api leavingId---delete--->
-    dispatch(leaveChannelAC(leavingId)); //or bad request
+
+    channelsAPI.leaveChannel(leavingId)
+        .then(response => {
+            if (response.statusText === 'OK') {
+                dispatch(leaveChannelAC(leavingId));
+            } else {
+                alert('Leaving error');
+            }
+        });
+    
 }
+
+export const joinChannelThunkCreator = (joinId) => (dispatch) => {
+
+    channelsAPI.joinChannel(joinId)
+        .then(response => {
+            if (response.statusText === 'OK') {
+                dispatch(addChannelThunkCreator(joinId));
+            } else {
+                alert('Join error');
+            }
+        });
+    
+}
+
+const addChannelThunkCreator = (addId) => (dispatch) => {
+    
+    channelsAPI.getChannel(addId)
+        .then(response => {
+            if (response.statusText === 'OK') {
+                dispatch(addChannelAC({
+                    channelId: response.data.channelId,
+                        name: response.data.name,
+                        theme: response.data.theme,
+                        creationTime: response.data.creationTime,
+                        countOfMessages: response.data.countOfMessages
+                        }
+                        )
+                    );
+                alert("Successful join to " + response.data.name);
+                }
+            });
+
+}
+
 
 export const deleteChannelThunkCreator = (deletingId) => (dispatch) => {
-    //api deletingId---delete--->
-    dispatch(leaveChannelAC(deletingId)); //or bad request
+
+    channelsAPI.deleteChannel(deletingId)
+        .then(response => {
+            if (response.statusText === 'OK') {
+                dispatch(leaveChannelAC(deletingId));
+            } else {
+                alert('Deleting error');
+            }
+        });
 }
 
-export const setChannelsThunkCreator = (userId) => (dispatch) => {
-    //api userdId --get--> channels
-    return dispatch(setChannelsAC(initialState.channels));
+export const setChannelsThunkCreator = () => (dispatch) => {
+    
+    channelsAPI.userChannels()
+        .then(data => {
+            if (data.statusText === 'OK') {
+                dispatch(setChannelsAC(data.data.channels)); 
+            } 
+    
+        });
 }
 
-export const addChannelThunkCreator = (addingId) => (dispatch) => {
-    //api addingId-----post--->
-    //return dispatch(getMoreMessagesAC(msgs));
-}
 
-export const CreateChannelThunkCreator = (name, theme, creationTime) => (dispatch) => {
-    //api addingId-----post--->
-    return dispatch(addChannelAC({name, id : initialState.channels.length + 1, creationTime, theme, countOfMessages:0}));
+export const createChannelThunkCreator = (name, theme, creationTime) => (dispatch) => {
+    channelsAPI.createChannel(name, theme, creationTime)
+    .then(response => {
+        if (response.statusText === 'OK') {
+            dispatch(joinChannelThunkCreator(response.data.channelId)); 
+            alert("Channel was created! Channel id: " + response.data.channelId);
+        } else {
+            alert("Creation Error");
+        }
+
+    });
+    
 }

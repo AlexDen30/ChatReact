@@ -114,11 +114,11 @@ const CurrentChannelHeaderContainer = (props) => {
 const mapStateToProps = (state) => {
 
     let index;
-
+    debugger;
     if (!state.channelsList.selectedChannelId) {
         return {};
     } else {
-        index = state.channelsList.channels.findIndex(ch => ch.id === state.channelsList.selectedChannelId)
+        index = state.channelsList.channels.findIndex(ch => ch.channelId === state.channelsList.selectedChannelId)
     }
 
     return {

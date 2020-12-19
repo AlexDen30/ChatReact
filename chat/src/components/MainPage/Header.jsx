@@ -14,7 +14,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { useForm } from '../hooks/useForm';
 import TextField from '@material-ui/core/TextField';
-import { CreateChannelThunkCreator } from '../../redux/channelsPanel-reducer';
+import { createChannelThunkCreator, joinChannelThunkCreator } from '../../redux/channelsPanel-reducer';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -92,9 +92,19 @@ const Header = (props) => {
                   root: classes.inputRoot,
                   input: classes.inputInput,
                 }}
+                onChange={props.handleJoinInputChange}
+                value={props.joinChId}
                 inputProps={{ 'aria-label': 'search' }}
               />
             </div>
+            <Button 
+            onClick={props.handleJoinChannel}
+            variant="contained"
+            color="primary"
+            className={classes.logoutButton}
+            >
+                Join 
+            </Button>
             <Button 
             onClick={props.handleCreateChannel}
             variant="contained"
@@ -129,6 +139,8 @@ const Header = (props) => {
 
   const HeaderContainer = (props) => {
 
+    const [joinChId, SetJoinChID] = useState("");
+
     const validate = (fieldValues = values) => {
       let temp = { ...errors };
       if ('name' in fieldValues)
@@ -150,6 +162,33 @@ const Header = (props) => {
         SetOpenCrDialog(true);
     }
 
+    const handleJoinChannel = () => {
+
+        if (joinChId > 0) {
+
+          let hasSameId = false;
+          let id = Number.parseInt(joinChId);
+          props.channels.forEach(element => {
+            if ( element.channelId === id) {
+              hasSameId = true;
+            }
+          });
+
+          if(!hasSameId) {
+            props.joinChannel(joinChId);
+            SetJoinChID("");
+          } else {
+            alert("You have already joined to this channel!")
+          }
+          
+        }
+        
+    }
+
+    const handleJoinInputChange = (e) => {
+        SetJoinChID(e.target.value);
+    }
+
     const handleCloseCrDialog = (resp) => {
     
         if (resp === "close") {
@@ -161,7 +200,7 @@ const Header = (props) => {
 
             if (validate()) {
               let date = new Date();
-              let dateToSend = date.getDay() + '.' + date.getMonth() + '.' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+              let dateToSend = date.getDate() + '.' + (date.getMonth()+1) + '.' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
               props.createChannel(values.name, values.theme, dateToSend);
             }
             
@@ -177,6 +216,9 @@ const Header = (props) => {
         <Header 
           handleSignOut={handleSignOut}
           handleCreateChannel={handleCreateChannel}   
+          handleJoinChannel={handleJoinChannel}
+          handleJoinInputChange={handleJoinInputChange}
+          joinChId={joinChId}
         />
         <Dialog
               open={isOpenCrDialog}
@@ -235,14 +277,19 @@ const Header = (props) => {
       },
 
       createChannel: (name, theme, creationTime) => {
-        dispatch(CreateChannelThunkCreator(name, theme, creationTime));
-      }
+        dispatch(createChannelThunkCreator(name, theme, creationTime));
+      },
+      
+      joinChannel: (chId) => {
+        dispatch(joinChannelThunkCreator(chId));
+      },
     }
   }
   
   const mapStateToProps = (state) => {
     return {
-      isAuthorized: state.authorizationData.isAuthorized    
+      isAuthorized: state.authorizationData.isAuthorized,
+      channels: state.channelsList.channels    
     }
   }
 

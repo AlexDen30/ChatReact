@@ -63,11 +63,11 @@ const ChannelsInPanel = (props) => {
                             <div>
                                 <ListItem 
                                     component={NavLink} 
-                                    to={`/main/channel/${ch.id}`} 
+                                    to={`/main/channel/${ch.channelId}`} 
                                     button 
-                                    onClick={() => {props.selectChannel(ch.id)}}
-                                    onContextMenu={(e) => props.handleChannelMenu(ch.id, e)}
-                                    key={ch.id} 
+                                    onClick={() => {props.selectChannel(ch.channelId)}}
+                                    onContextMenu={(e) => props.handleChannelMenu(ch.channelId, e)}
+                                    key={ch.channelId} 
                                 >
                                     <ListItemIcon>
                                         <Avatar alt={ch.name}  />
