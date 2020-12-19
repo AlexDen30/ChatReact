@@ -58,17 +58,19 @@ namespace ChatAPI.Models.ChannelsModel
             }
         }
 
-        public void AddChannel(ChannelsModel channel)
+        public int AddChannel(string name, string theme, string creationTime)
         {
             using (OracleConnection db = new OracleConnection(connectionString))
             {
-                string sql = "INSERT INTO Channels(name, theme, creation_time, count_of_messages) " +
-                    "VALUES(:Name,:Theme, to_date(:CreationTime, \'dd.MM.yyyy hh24:mi:ss\'), :CountOfMessages)";
+                string sql = "INSERT INTO Channels(name, theme, creation_time) " +
+                    "VALUES(:Name,:Theme, to_date(:CreationTime, \'dd.MM.yyyy hh24:mi:ss\'))";
 
 
                 db.Open();
 
-                db.Execute(sql, channel);
+                db.Execute(sql, new { Name = name, Theme = theme, CreationTime = creationTime });
+
+                return db.Query<int>("SELECT channel_id FROM Channels WHERE creation_time = to_date(:CRtime, \'dd.MM.yyyy hh24:mi:ss\') ", new { CRtime = creationTime }).FirstOrDefault();
             }
         }
 

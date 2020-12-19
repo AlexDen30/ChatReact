@@ -60,32 +60,25 @@ namespace ChatAPI.Controllers
             public string Password{ get; set; }
         }
 
-        public class LoginResponse
-        {
-            public string RequestResult{ get; set; }
-        }
+        
 
         [HttpPost("login", Name = "AuthUser")]
-        public LoginResponse Login([FromBody] AuthData authData)
+        public IActionResult Login([FromBody] AuthData authData)
         {
 
             int reqData = usersRep.GetUserIdForAuth(authData.Email, authData.Password);
-            LoginResponse resp = new LoginResponse();
-            
+           
 
             if (reqData == 0)
             {
-                resp.RequestResult = "invalid";
-                return resp; 
+                return BadRequest(); 
             }
 
             Response.Cookies.Append("userId", reqData.ToString());
-            resp.RequestResult = "success";
 
-            return resp;
+            return Ok();
         }
 
-        // not for the client app
         [HttpDelete("logout", Name = "LogoutUser")]
         public void Logout()
         {

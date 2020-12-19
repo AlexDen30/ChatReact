@@ -20,33 +20,52 @@ namespace ChatAPI.Controllers
             channelsRep = new ChannelsRepository();
         }
 
-        // GET: api/Channels?userId=21
+        public class ChannelsWrapper
+        {
+            public IEnumerable<ChannelsModel> Channels { get; set; }
+        } 
         [HttpGet("userChannels", Name = "GetUserChannels")]
-        public IEnumerable<ChannelsModel> GetUserChannels([FromQuery(Name = "userId")] int userId )
-        { 
+        public ChannelsWrapper GetUserChannels()
+        {
+            int userId = Convert.ToInt32(Request.Cookies["userId"]);
 
-            return channelsRep.GetUserChannels(userId);
+            ChannelsWrapper res = new ChannelsWrapper();
+
+            res.Channels = channelsRep.GetUserChannels(userId);
+            return res;
         }
 
-        // GET: api/Channels
+        //not for the client app
         [HttpGet(Name = "GetChannels")]
         public IEnumerable<ChannelsModel> GetChannels()
         {
             return channelsRep.GetChannels();
         }
 
-        // GET: api/Channels/5
+        //not for the client app
         [HttpGet("{id}", Name = "GetChannel")]
         public ChannelsModel GetChannel(int id)
         {
             return channelsRep.GetChannel(id);
         }
 
+        public class ChannelCreationData
+        {
+            public string Name { get; set; }
+
+            public string Theme { get; set; }
+
+            public string CreationTime { get; set; }
+
+        }
         //// POST: api/Channels
         [HttpPost(Name ="PostChannel")]
-        public void PostChannel([FromBody] ChannelsModel channel)
+        public ObjectResult PostChannel([FromBody] ChannelCreationData data)
         {
-            channelsRep.AddChannel(channel);
+            int createdChId = channelsRep.AddChannel(data.Name, data.Theme, data.CreationTime);
+
+            return new ObjectResult(new { channelId = createdChId });
+
         }
 
 
@@ -58,24 +77,24 @@ namespace ChatAPI.Controllers
         }
 
 
-        public class UserHasChannel
-        {
-            public int ChannelId{ get; set; }
-            public int UserId{ get; set; }
-        }
+        
         //// POST: api/Channels/userChannels/join
         [HttpPost("userChannels/join",Name = "UserJoinChannel")]
-        public void UserJoinChannel([FromBody] UserHasChannel usHasCh)
+        public void UserJoinChannel([FromQuery(Name = "channel")] int channelId)
         {
-            channelsRep.UserJoinChannel(usHasCh.ChannelId,usHasCh.UserId);
+            int userId = Convert.ToInt32(Request.Cookies["userId"]);
+
+            channelsRep.UserJoinChannel(channelId, userId);
         }
 
 
         //// DELETE: api/Channels/userChannels/leave
-        [HttpPost("userChannels/leave", Name = "UserLeaveChannel")]
-        public void UserLeaveChannel ([FromBody] UserHasChannel usHasCh)
+        [HttpDelete("userChannels/leave", Name = "UserLeaveChannel")]
+        public void UserLeaveChannel ([FromQuery(Name = "channel")] int channelId)
         {
-            channelsRep.UserLeaveChannel(usHasCh.ChannelId, usHasCh.UserId);
+            int userId = Convert.ToInt32(Request.Cookies["userId"]);
+
+            channelsRep.UserLeaveChannel(channelId, userId);
         }
     }
 }
