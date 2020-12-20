@@ -34,13 +34,14 @@ namespace ChatAPI.Controllers
         public async Task<IActionResult> SendMessage()
         {
             MessageModel msg = new MessageModel();
+            byte[] file = null;
 
             //geting form data to model 
             if (Request.Form["type"] == "file")
             {
                 var ms = new MemoryStream();
                 Request.Form.Files.FirstOrDefault().CopyTo(ms);
-                msg.ContentFile = ms.ToArray();
+                file = ms.ToArray();
             }
             
 
@@ -52,12 +53,19 @@ namespace ChatAPI.Controllers
 
             
             msg.SenderId = Convert.ToInt32(Request.Cookies["userId"]);
-            messageRep.AddMessage(msg);
+            messageRep.AddMessage(msg, file);
 
             await _messageHub.Clients.All.SendAsync("newMsg",messageRep.GetMessage(msg.MessageId));
 
             return Ok();
         }
+
+        [HttpGet("download", Name = "DownloadMessageFile")]
+        public byte[] GetFile([FromQuery(Name = "messageId")] int msgId)
+        {
+            return messageRep.GetMessageFile(msgId);
+        }
+
 
         //not for the client
         [HttpGet("{channelId}", Name = "GetAllChannelMsgs")]

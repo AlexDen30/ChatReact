@@ -17,8 +17,6 @@ namespace ChatAPI.Models.MessageModel
 
         public string ContentText{ get; set; }
 
-        public byte[] ContentFile{ get; set; }
-
         public string Color{ get; set; }
 
         public int SenderId { get; set; }

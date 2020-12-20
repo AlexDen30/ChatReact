@@ -25,7 +25,7 @@ namespace ChatAPI.Models.MessageModel
                 //string sql = "SELECT message_id AS MessageId, channel_id AS ChannelId, type, content_text AS ContentText, content_file AS ContentFile, color, sender_id AS SenderId "
 
                 string sql = "SELECT m.message_id AS MessageId, m.channel_id AS ChannelId, " +
-                    "m.type, m.content_text AS ContentText, m.content_file AS ContentFile, " +
+                    "m.type, m.content_text AS ContentText, " +
                     "m.color, m.sender_id AS SenderId, " +
                     "m.creation_time AS CreationTime, m.number_in_chat AS NumberInChat, " +
                     "u.user_name AS SenderUserName " +
@@ -43,7 +43,7 @@ namespace ChatAPI.Models.MessageModel
             {
                 
                 string sql = "SELECT m.message_id AS MessageId, m.channel_id AS ChannelId, " +
-                    "m.type, m.content_text AS ContentText, m.content_file AS ContentFile, " +
+                    "m.type, m.content_text AS ContentText,  " +
                     "m.color, m.sender_id AS SenderId, " +
                     "m.creation_time AS CreationTime, m.number_in_chat AS NumberInChat, " +
                     "u.user_name AS SenderUserName " +
@@ -61,7 +61,7 @@ namespace ChatAPI.Models.MessageModel
             {
 
                 string sql = "SELECT m.message_id AS MessageId, m.channel_id AS ChannelId, " +
-                    "m.type, m.content_text AS ContentText, m.content_file AS ContentFile, " +
+                    "m.type, m.content_text AS ContentText,  " +
                     "m.color, m.sender_id AS SenderId, " +
                     "m.creation_time AS CreationTime, m.number_in_chat AS NumberInChat, " +
                     "u.user_name AS SenderUserName " +
@@ -73,7 +73,19 @@ namespace ChatAPI.Models.MessageModel
             }
         }
 
-        public void AddMessage(MessageModel message)
+        public byte[] GetMessageFile(int messageId)
+        {
+            using (OracleConnection db = new OracleConnection(connectionString))
+            {
+
+                string sql = "SELECT content_file FROM Messages WHERE message_id = :ID";
+
+                db.Open();
+                return db.Query<byte[]>(sql, new { ID = messageId}).FirstOrDefault();
+            }
+        }
+
+        public void AddMessage(MessageModel message, byte[] contentFile)
         {
             using (OracleConnection db = new OracleConnection(connectionString))
             {
@@ -91,11 +103,21 @@ namespace ChatAPI.Models.MessageModel
                     "(SELECT count_of_messages FROM Channels WHERE channel_id = :ChannelId) " +
                     "WHERE message_id IN (SELECT MAX(message_id) FROM Messages) AND channel_id = :ChannelId";
 
-                db.Execute(sql1, new { ChannelId = message.ChannelId });
+                db.Execute(sql1, new { message.ChannelId });
 
-                db.Execute(sql2, message);
+                db.Execute(sql2, new
+                {
+                    ContentFile = contentFile,
+                    message.ChannelId,
+                    message.Color,
+                    message.ContentText,
+                    message.CreationTime,
+                    message.SenderId,
+                    message.Type,
+                    message.NumberInChat
+                });
 
-                db.Execute(sql3, new { ChannelId = message.ChannelId });
+                db.Execute(sql3, new { message.ChannelId });
             }
         }
     }
