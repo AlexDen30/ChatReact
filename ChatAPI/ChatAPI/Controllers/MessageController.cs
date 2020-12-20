@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.SignalR;
 using System.Diagnostics.CodeAnalysis;
 using ChatAPI.TimeFeatures;
 using ChatAPI.Models.MessageModel;
+using System.IO;
 
 namespace ChatAPI.Controllers
 {
@@ -30,8 +31,27 @@ namespace ChatAPI.Controllers
         //}
 
         [HttpPost]
-        public async Task<IActionResult> SendMessage(MessageModel msg)
+        public async Task<IActionResult> SendMessage()
         {
+            MessageModel msg = new MessageModel();
+
+            //geting form data to model 
+            if (Request.Form["type"] == "file")
+            {
+                var ms = new MemoryStream();
+                Request.Form.Files.FirstOrDefault().CopyTo(ms);
+                msg.ContentFile = ms.ToArray();
+            }
+            
+
+            msg.ChannelId = Convert.ToInt32(Request.Form["channelId"]);
+            msg.Type = Request.Form["type"];
+            msg.ContentText = Request.Form["contentText"];
+            msg.Color = Request.Form["color"];
+            msg.CreationTime = Request.Form["creationTime"];
+
+            
+            msg.SenderId = Convert.ToInt32(Request.Cookies["userId"]);
             messageRep.AddMessage(msg);
 
             await _messageHub.Clients.All.SendAsync("newMsg",messageRep.GetMessage(msg.MessageId));
@@ -39,6 +59,7 @@ namespace ChatAPI.Controllers
             return Ok();
         }
 
+        //not for the client
         [HttpGet("{channelId}", Name = "GetAllChannelMsgs")]
         public IEnumerable<MessageModel> GetChannelMessages(int channelId)
         {
@@ -47,11 +68,11 @@ namespace ChatAPI.Controllers
         }
 
         [HttpGet("between/{channelId}", Name = "GetChannelMessagesBetween")]
-        public IEnumerable<MessageModel> GetChannelMessagesBetween(int channelId, 
+        public ObjectResult GetChannelMessagesBetween(int channelId, 
             [FromQuery(Name = "from")] int from, [FromQuery(Name = "to")] int to)
         {
 
-            return messageRep.GetChannelMessagesBetween(channelId,from,to);
+            return new ObjectResult( new { messages = messageRep.GetChannelMessagesBetween(channelId, from, to) });
         }
 
     }

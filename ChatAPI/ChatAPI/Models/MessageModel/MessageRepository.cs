@@ -24,11 +24,13 @@ namespace ChatAPI.Models.MessageModel
             {
                 //string sql = "SELECT message_id AS MessageId, channel_id AS ChannelId, type, content_text AS ContentText, content_file AS ContentFile, color, sender_id AS SenderId "
 
-                string sql = "SELECT message_id AS MessageId, channel_id AS ChannelId, " +
-                    "type, content_text AS ContentText, content_file AS ContentFile, " +
-                    "color, sender_id AS SenderId, " +
-                    "creation_time AS CreationTime, number_in_chat AS NumberInChat " +
-                    "FROM Messages WHERE message_id= :ID ";
+                string sql = "SELECT m.message_id AS MessageId, m.channel_id AS ChannelId, " +
+                    "m.type, m.content_text AS ContentText, m.content_file AS ContentFile, " +
+                    "m.color, m.sender_id AS SenderId, " +
+                    "m.creation_time AS CreationTime, m.number_in_chat AS NumberInChat, " +
+                    "u.user_name AS SenderUserName " +
+                    "FROM Messages m JOIN ChatUsers u ON m.sender_id = u.user_id " +
+                    "WHERE message_id= :ID ";
 
                 db.Open();
                 return db.Query<MessageModel>(sql, new { ID = messageId}).FirstOrDefault();
@@ -40,11 +42,13 @@ namespace ChatAPI.Models.MessageModel
             using (OracleConnection db = new OracleConnection(connectionString))
             {
                 
-                string sql = "SELECT message_id AS MessageId, channel_id AS ChannelId, " +
-                    "type, content_text AS ContentText, content_file AS ContentFile, " +
-                    "color, sender_id AS SenderId, " +
-                    "creation_time AS CreationTime, number_in_chat AS NumberInChat " +
-                    "FROM Messages WHERE channel_id= :ID ";
+                string sql = "SELECT m.message_id AS MessageId, m.channel_id AS ChannelId, " +
+                    "m.type, m.content_text AS ContentText, m.content_file AS ContentFile, " +
+                    "m.color, m.sender_id AS SenderId, " +
+                    "m.creation_time AS CreationTime, m.number_in_chat AS NumberInChat, " +
+                    "u.user_name AS SenderUserName " +
+                    "FROM Messages m JOIN ChatUsers u ON m.sender_id = u.user_id " +
+                    "WHERE m.channel_id= :ID ";
 
                 db.Open();
                 return db.Query<MessageModel>(sql, new { ID = channel_id });
@@ -56,11 +60,13 @@ namespace ChatAPI.Models.MessageModel
             using (OracleConnection db = new OracleConnection(connectionString))
             {
 
-                string sql = "SELECT message_id AS MessageId, channel_id AS ChannelId, " +
-                    "type, content_text AS ContentText, content_file AS ContentFile, " +
-                    "color, sender_id AS SenderId, " +
-                    "creation_time AS CreationTime, number_in_chat AS NumberInChat " +
-                    "FROM Messages WHERE channel_id= :ID AND number_in_chat BETWEEN :FIRST AND :LAST";
+                string sql = "SELECT m.message_id AS MessageId, m.channel_id AS ChannelId, " +
+                    "m.type, m.content_text AS ContentText, m.content_file AS ContentFile, " +
+                    "m.color, m.sender_id AS SenderId, " +
+                    "m.creation_time AS CreationTime, m.number_in_chat AS NumberInChat, " +
+                    "u.user_name AS SenderUserName " +
+                    "FROM Messages m JOIN ChatUsers u ON m.sender_id = u.user_id " +
+                    "WHERE m.channel_id= :ID AND m.number_in_chat BETWEEN :FIRST AND :LAST";
 
                 db.Open();
                 return db.Query<MessageModel>(sql, new { ID = channel_id, FIRST = from, LAST = to });

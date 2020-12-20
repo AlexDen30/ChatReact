@@ -26,5 +26,7 @@ namespace ChatAPI.Models.MessageModel
         public string CreationTime { get; set; }
 
         public int NumberInChat{ get; set; }
+
+        public string SenderUserName { get; set; }
     }
 }
