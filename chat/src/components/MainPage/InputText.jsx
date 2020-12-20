@@ -26,7 +26,7 @@ function InputText(props) {
     const [input, setInput] = useState("");
     const [blockInput, setBlockInput] = useState(true);
     const [file, setFile] = useState(null);
-    const [msgColor, setMsgColor] = useState('#F00FFF');
+    const [msgColor, setMsgColor] = useState('#20F980');
     const [isOpenColorDialog, setOpenColorDialog] = useState(false);
 
     const handleClickOpenColorDialog = () => {
@@ -63,7 +63,7 @@ function InputText(props) {
         let date = new Date();
         let dateStringToSend = date.getDate() + '.' + (date.getMonth()+1) + '.' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
         file 
-            ? props.sendMessage(props.currentChannelId, "file", input.slice(0, input.indexOf('(double click here to undo)')), file, msgColor.slice(1), dateStringToSend) 
+            ? props.sendMessage(props.currentChannelId, "file", input.slice(0, input.indexOf('(double click here to undo)') - 1), file, msgColor.slice(1), dateStringToSend) 
             : props.sendMessage(props.currentChannelId, "text", input, " ", msgColor.slice(1), dateStringToSend);
         
         setInput("");

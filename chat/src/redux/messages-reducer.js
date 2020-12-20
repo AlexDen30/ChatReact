@@ -1,6 +1,5 @@
 import { messagesAPI } from "../api/api";
 
-
 const SET_MESSAGES = 'SET_MESSAGES';
 //const GET_MORE_MESSAGES = 'GET_MORE_MESSAGES';
 //const SEND_MESSAGE = 'SEND_MESSAGE';
@@ -175,5 +174,15 @@ export const setMessagesThunkCreator = (channelId, from, to) => (dispatch) => {
         });
 }
 
+export const downloadMessageFileThunkCreator = (messageId, fileName) => {
 
+    messagesAPI.downloadMessageFile(messageId)
+        .then(response => {
+            if (response.statusText === 'OK') {
+                var fileDownload = require('js-file-download');
+                fileDownload(response.data, fileName); 
+            } 
+
+        });
+}
 

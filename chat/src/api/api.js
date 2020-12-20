@@ -96,5 +96,18 @@ export const messagesAPI = {
               'Content-Type': 'multipart/form-data'
             }
         });
+    },
+
+    downloadMessageFile (messageId) {
+        return axios(
+            {
+                url:`https://localhost:44366/api/Message/download?messageId=${messageId}`,
+                method: 'GET',
+                responseType: 'blob',
+            }
+        )
+        // return instance.get(`Message/download?messageId=${messageId}`, {
+        //     responseType: 'arraybuffer'
+        // })
     }
 }

@@ -7,7 +7,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { ListSubheader } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { setMessagesThunkCreator } from '../../redux/messages-reducer';
+import { downloadMessageFileThunkCreator, setMessagesThunkCreator } from '../../redux/messages-reducer';
+import GetAppIcon from '@material-ui/icons/GetApp'
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
@@ -53,9 +54,14 @@ const Messages = (props) => {
                 {
                     props.messages.map((msg) => {
                         return (
-                            <ListItem key={msg.id}>
+                            <ListItem key={msg.messageId}>
+                            {msg.type === "file" 
+                                && <GetAppIcon  
+                                        onDoubleClick={msg.type === "file" ? () => props.downloadFile(msg.messageId, msg.contentText) : ()=>{} }
+                                    /> 
+                            }
                             <ListItemText 
-                                style = {msg.color === 'default'? {backgroundColor:''} : {backgroundColor:('#' + msg.color).toUpperCase()}}
+                                style = {{backgroundColor:('#' + msg.color).toUpperCase()}}
                                 align={props.currentUserName===msg.senderUserName?"right":"left"} 
                                 primary={msg.contentText} 
                                 primaryTypographyProps={{color: "#000000"}}
@@ -93,6 +99,10 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setMessages: (currentChannelId, from, to) => {
             dispatch(setMessagesThunkCreator(currentChannelId, from, to))
+        },
+
+        downloadFile: (messageId, fileName) => {
+            downloadMessageFileThunkCreator(messageId, fileName);
         }
     }
 }
