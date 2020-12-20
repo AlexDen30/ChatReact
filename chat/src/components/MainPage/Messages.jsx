@@ -36,8 +36,13 @@ const Messages = (props) => {
     const classes = useStyles();
 
     useEffect(() => {
-        props.setMessages(props.currentChannelId)
-    }, [])
+        if (props.countOfChannelMessages > 10){
+            props.setMessages(props.currentChannelId,props.countOfChannelMessages - 10, props.countOfChannelMessages)
+        } else {
+            props.setMessages(props.currentChannelId, 1, props.countOfChannelMessages)
+        }
+        
+    }, [props.selectedChID])
 
     return (
         <div>      
@@ -50,11 +55,11 @@ const Messages = (props) => {
                         return (
                             <ListItem key={msg.id}>
                             <ListItemText 
-                                style = {msg.bgColor === 'default'? {backgroundColor:''} : {backgroundColor: msg.bgColor}}
-                                align={props.currentUserName===msg.sender?"right":"left"} 
-                                primary={msg.content} 
+                                style = {msg.color === 'default'? {backgroundColor:''} : {backgroundColor:('#' + msg.color).toUpperCase()}}
+                                align={props.currentUserName===msg.senderUserName?"right":"left"} 
+                                primary={msg.contentText} 
                                 primaryTypographyProps={{color: "#000000"}}
-                                secondary={msg.sender + ", " + msg.time}
+                                secondary={msg.senderUserName + ", " + msg.creationTime}
                             />
                             </ListItem>
                         )
@@ -67,16 +72,27 @@ const Messages = (props) => {
 
 
 const mapStateToProps = (state) => {
-    return {
-        messages: state.messagesData.channelMessages,
-        currentUserName: state.authorizationData.userName
+
+    let index;
+    if (!state.channelsList.selectedChannelId) {
+        return {};
+    } else {
+        index = state.channelsList.channels.findIndex(ch => ch.channelId === state.channelsList.selectedChannelId)
     }
+
+    return {
+        selectedChID : state.channelsList.selectedChannelId,
+        messages: state.messagesData.channelMessages,
+        currentUserName: state.authorizationData.userName,
+        countOfChannelMessages: state.channelsList.channels[index].countOfMessages,
+    }
+    
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setMessages: (currentChannelId) => {
-            dispatch(setMessagesThunkCreator(currentChannelId))
+        setMessages: (currentChannelId, from, to) => {
+            dispatch(setMessagesThunkCreator(currentChannelId, from, to))
         }
     }
 }

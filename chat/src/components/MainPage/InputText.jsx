@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { Create, Publish } from '@material-ui/icons';
 import { connect } from 'react-redux';
-import { sendMessageThunkCreator, uploadThunkCreator } from '../../redux/messages-reducer';
+import { sendMessageThunkCreator} from '../../redux/messages-reducer';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -44,17 +44,28 @@ function InputText(props) {
         setInput(value);
     }
 
-    const handleSendTextMessage = () => {
-        let date = new Date();
-        let stringToSend = date.getHours() + ':' + date.getMinutes() + ' - ' + date.getDay() + '.' + date.getMonth() + '.' + date.getFullYear();
-        props.sendMessage(input, stringToSend, props.userName, msgColor);
-        setInput("");
-    }
+    // const handleSendTextMessage = () => {
+    //     let date = new Date();
+    //     let stringToSend = date.getDate() + '.' + (date.getMonth()+1) + '.' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+    //     props.sendMessage(input, stringToSend, props.userName, msgColor);
+    //     setInput("");
+    // }
 
-    const handleSendFileMessage = () => {
+    // const handleSendFileMessage = () => {
+    //     let date = new Date();
+    //     let stringToSend = date.getDate() + '.' + (date.getMonth()+1) + '.' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+    //     props.sendFile(file, stringToSend, props.userName);
+    //     setInput("");
+    //     setFile(null);
+    // }
+
+    const handleSendMessage = () => {
         let date = new Date();
-        let stringToSend = date.getHours() + ':' + date.getMinutes() + ' - ' + date.getDay() + '.' + date.getMonth() + '.' + date.getFullYear();
-        props.sendFile(file, stringToSend, props.userName);
+        let dateStringToSend = date.getDate() + '.' + (date.getMonth()+1) + '.' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+        file 
+            ? props.sendMessage(props.currentChannelId, "file", input.slice(0, input.indexOf('(double click here to undo)')), file, msgColor.slice(1), dateStringToSend) 
+            : props.sendMessage(props.currentChannelId, "text", input, " ", msgColor.slice(1), dateStringToSend);
+        
         setInput("");
         setFile(null);
     }
@@ -105,7 +116,7 @@ function InputText(props) {
                         disabled={input==="" ? true : false} 
                         color="primary" 
                         aria-label="add" 
-                        onClick={file ? handleSendFileMessage : handleSendTextMessage}
+                        onClick={handleSendMessage}
                         onContextMenu={handleClickOpenColorDialog}
                     >
                             <Create />
@@ -148,17 +159,14 @@ function InputText(props) {
 
 const mapStateToProps = (state) => {
     return {
-        userName: state.authorizationData.userName
+        currentChannelId: state.channelsList.selectedChannelId,
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        sendMessage: (msgContent, sendTime, sender, bgColor) => {
-            dispatch(sendMessageThunkCreator(msgContent, sendTime, sender, bgColor));
-        },
-        sendFile: (msgContent, sendTime, sender) => {
-            dispatch(uploadThunkCreator(msgContent, sendTime, sender));
+        sendMessage: (channelId, type, contentText, contentFile, color, creationTime) => {
+            dispatch(sendMessageThunkCreator(channelId, type, contentText, contentFile, color, creationTime));
         }
     }
 }
