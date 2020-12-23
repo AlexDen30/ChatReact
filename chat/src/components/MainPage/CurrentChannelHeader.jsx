@@ -5,7 +5,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Button } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { leaveChannelThunkCreator, selectChannelAC } from '../../redux/channelsPanel-reducer';
+import { guestLeaveChannelThunkCreator, leaveChannelThunkCreator, selectChannelAC } from '../../redux/channelsPanel-reducer';
 import { NavLink } from 'react-router-dom';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -42,7 +42,7 @@ const CurrentChannelHeader = (props) => {
                 <Grid item xs={8}>
                     <ListItem key='header' className={classes.headerInfo}>
                         <ListItemText
-                            primary={props.channelName + ' ⋅ ' + props.channelTheme + ' | totaly ' + props.countOfChannelMessages + ' messages'}
+                            primary={props.channelName + ' ⋅ ' + props.channelTheme}
                             secondary={'Created on ' + props.channelCreationTime}
                         />
                     </ListItem>
@@ -73,7 +73,12 @@ const CurrentChannelHeaderContainer = (props) => {
     const handleClose = (result) => {
         setOpen(false);
         if (result) {
-            props.leaveChannel(props.currentChannelId);
+            if(props.role === 'guest') {
+                props.guestLeaveChannel(Number.parseInt(props.currentChannelId));
+            } else {
+                props.leaveChannel(Number.parseInt(props.currentChannelId));
+            }
+            
             props.selectChannel(null);
         }
     };
@@ -127,6 +132,7 @@ const mapStateToProps = (state) => {
         channelCreationTime: state.channelsList.channels[index].creationTime,
         channelTheme: state.channelsList.channels[index].theme,
         countOfChannelMessages: state.channelsList.channels[index].countOfMessages,
+        role: state.authorizationData.role
     }
 }
 
@@ -139,6 +145,10 @@ const mapDispatchToProps = (dispatch) => {
         selectChannel: (channelId) => {
             dispatch(selectChannelAC(channelId));
         },
+
+        guestLeaveChannel: (leavingId) => {
+            return dispatch(guestLeaveChannelThunkCreator(leavingId));
+        }
     }
 }
 

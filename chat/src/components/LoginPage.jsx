@@ -136,7 +136,7 @@ const LoginPage = (props) => {
   }
 
   const handleSignInGuest = () => {
-    props.loginGuest();
+    props.login('guest', 'guest');
   }
 
 
@@ -155,10 +155,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     login: (email, password) => {
       dispatch(loginThunkCreator(email, password));
-    },
-
-    loginGuest: () => {
-      dispatch(loginThunkCreator('guest', 'guest'));
     },
   }
 }

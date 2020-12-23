@@ -9,7 +9,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { ListSubheader } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
-import { deleteChannelThunkCreator, leaveChannelThunkCreator, selectChannelAC, setChannelsThunkCreator } from '../../redux/channelsPanel-reducer';
+import { deleteChannelThunkCreator, guestLeaveChannelThunkCreator, leaveChannelThunkCreator, selectChannelAC, setChannelsThunkCreator } from '../../redux/channelsPanel-reducer';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import AlertQuestion from '../utilityComponents/AlertQuestion';
@@ -130,7 +130,12 @@ const ChannelsInPanelContainer = (props) => {
             if (idOnMenu === props.selectedChannel) {
                 props.selectChannel(null);
             }
-            props.leaveChannel(idOnMenu);
+            if (props.role === 'guest') {
+                props.guestLeaveChannel(idOnMenu);
+            } else {
+                props.leaveChannel(idOnMenu);
+            }
+            
         }
     };
 
@@ -167,7 +172,7 @@ const ChannelsInPanelContainer = (props) => {
                 }
             >
                 <MenuItem onClick={() => handleCloseMenu("LeaveChannel")}>Leave</MenuItem>
-                <MenuItem onClick={() => handleCloseMenu("DeleteChannel")}>Delete</MenuItem>
+                {props.role ==="admin"&& <MenuItem onClick={() => handleCloseMenu("DeleteChannel")}>Delete</MenuItem>}
             </Menu>
             <AlertQuestion 
                 open={openAlertleave} 
@@ -192,6 +197,7 @@ const mapStateToProps = (state) => {
         channels: state.channelsList.channels,
         userName: state.authorizationData.userName,
         userId: state.authorizationData.userId,
+        role: state.authorizationData.role
     }
 }
 
@@ -211,7 +217,11 @@ const mapDispatchToProps = (dispatch) => {
 
         deleteChannel: (deletingId) => {
             return dispatch(deleteChannelThunkCreator(deletingId));
-        }
+        },
+
+        guestLeaveChannel: (leavingId) => {
+            return dispatch(guestLeaveChannelThunkCreator(leavingId));
+        },
     }
 }
 

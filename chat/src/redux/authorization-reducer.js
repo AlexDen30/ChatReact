@@ -70,17 +70,20 @@ export const setAuthUserDataThunkCreator = () => (dispatch) => {
                     data.data.firstName, data.data.secondName, data.data.birthDate, true));
             }
         });
-   //return dispatch(setAuthUserData('data.id', 'current',' data.email', 'data.login', true));
+   
 }
 
-// export const setAuthGuestDataThunkCreator = () => (dispatch) => {
+export const setAuthGuestDataThunkCreator = () => (dispatch) => {
 
-//     return dispatch(setAuthUserData('guest', 'current','----', 'guest', true));
-// }
+    return dispatch(setAuthUserDataAC('guest', 'guest','guest', 'guest', 'guest', 'guest', true));
+}
 
 export const loginThunkCreator = (email, password) => (dispatch) => {
 
-    authAPI.login(email, password)
+    if (email === 'guest' && password === 'guest') {
+        dispatch(setAuthGuestDataThunkCreator());
+    } else {
+        authAPI.login(email, password)
         .then(response => {
             
             if (response.statusText === 'OK') {
@@ -89,12 +92,7 @@ export const loginThunkCreator = (email, password) => (dispatch) => {
                 alert("Wrong email or password!");
             }
         });
-    // if (email === 'guest' && password === 'guest') {
-    //     dispatch(setAuthGuestDataThunkCreator());
-    // } else {
-    //     dispatch(setAuthUserDataThunkCreator());
-    // }
-
+    }
 }
 
 

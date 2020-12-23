@@ -92,7 +92,9 @@ const Messages = (props) => {
                             <ListItem key={msg.messageId}>
                             {msg.type === "file" 
                                 && <GetAppIcon  
-                                        onDoubleClick={msg.type === "file" ? () => props.downloadFile(msg.messageId, msg.contentText) : ()=>{} }
+                                       onDoubleClick={msg.type === "file" &&  props.role !== "guest"
+                                        ? () => props.downloadFile(msg.messageId, msg.contentText) 
+                                        : ()=>{} }
                                     /> 
                             }
                             <ListItemText 
@@ -126,7 +128,8 @@ const mapStateToProps = (state) => {
         messages: state.messagesData.channelMessages,
         currentUserName: state.authorizationData.userName,
         countOfChannelMessages: state.channelsList.channels[index].countOfMessages,
-        firstMessage: state.messagesData.channelMessages[0]
+        firstMessage: state.messagesData.channelMessages[0],
+        role: state.authorizationData.role
     }
     
 }

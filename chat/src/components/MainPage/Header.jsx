@@ -14,7 +14,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { useForm } from '../hooks/useForm';
 import TextField from '@material-ui/core/TextField';
-import { createChannelThunkCreator, joinChannelThunkCreator } from '../../redux/channelsPanel-reducer';
+import { createChannelThunkCreator, guestJoinChannelThunkCreator, guestLeaveChannelThunkCreator, joinChannelThunkCreator } from '../../redux/channelsPanel-reducer';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -105,14 +105,16 @@ const Header = (props) => {
             >
                 Join 
             </Button>
-            <Button 
-            onClick={props.handleCreateChannel}
-            variant="contained"
-            color="primary"
-            className={classes.logoutButton}
-            >
-                Create Channel
-            </Button>
+            { props.role === "admin" &&
+              <Button 
+              onClick={props.handleCreateChannel}
+              variant="contained"
+              color="primary"
+              className={classes.logoutButton}
+              >
+                  Create Channel
+              </Button>
+            }
             <Typography className={classes.title} variant="h6" noWrap align="center">
               Chatting
             </Typography>
@@ -175,10 +177,16 @@ const Header = (props) => {
           });
 
           if(!hasSameId) {
-            props.joinChannel(joinChId);
-            SetJoinChID("");
+              if(props.role === 'guest') {
+                  props.guestJoinChannel(joinChId);
+                  SetJoinChID("");
+              } else {
+                  props.joinChannel(joinChId);
+                  SetJoinChID("");
+              }
+            
           } else {
-            alert("You have already joined to this channel!")
+              alert("You have already joined to this channel!")
           }
           
         }
@@ -219,6 +227,7 @@ const Header = (props) => {
           handleJoinChannel={handleJoinChannel}
           handleJoinInputChange={handleJoinInputChange}
           joinChId={joinChId}
+          role={props.role}
         />
         <Dialog
               open={isOpenCrDialog}
@@ -283,13 +292,22 @@ const Header = (props) => {
       joinChannel: (chId) => {
         dispatch(joinChannelThunkCreator(chId));
       },
+
+      guestJoinChannel: (chId) => {
+        dispatch(guestJoinChannelThunkCreator(chId));
+      },
+
+      guestLeaveChannel: (chId) => {
+        dispatch(guestLeaveChannelThunkCreator(chId));
+      }
     }
   }
   
   const mapStateToProps = (state) => {
     return {
       isAuthorized: state.authorizationData.isAuthorized,
-      channels: state.channelsList.channels    
+      channels: state.channelsList.channels,
+      role: state.authorizationData.role
     }
   }
 

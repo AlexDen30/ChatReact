@@ -72,7 +72,7 @@ function InputText(props) {
         <div>
             <Grid container style={{ padding: '20px' }}>
                 <Grid xs={1} align="right">
-                    <Fab  color="primary" aria-label="publish" onClick={uploadClick}><Publish /></Fab>
+                    <Fab  color="primary" aria-label="publish" onClick={uploadClick} disabled={props.role === "guest" && true}><Publish /></Fab>
                 </Grid>
                 <Grid xs={1} align="right">
                     
@@ -84,7 +84,7 @@ function InputText(props) {
                         label="Type Something" 
                         fullWidth 
                         value = {input}
-                        disabled={file ? true : false}
+                        disabled={file || props.role === "guest" ? true : false}
                         onDoubleClick={file ? handleUndoUpload : ()=>{}}
                         onChange={handleInputChange}
                     />
@@ -94,7 +94,7 @@ function InputText(props) {
                 </Grid>
                 <Grid xs={1} align="right">
                     <Fab 
-                        disabled={input==="" ? true : false} 
+                        disabled={input==="" || props.role === "guest" ? true : false} 
                         color="primary" 
                         aria-label="add" 
                         onClick={handleSendMessage}
@@ -111,7 +111,7 @@ function InputText(props) {
                 style={{display:'none'}} 
             />
 
-            <Dialog
+            {props.role === "admin" && <Dialog
                 open={isOpenColorDialog}
                 onClose={handleCloseColorDialog}
                 aria-labelledby="alert-dialog-title"
@@ -133,6 +133,7 @@ function InputText(props) {
                 </Button>
                 </DialogActions>
             </Dialog>
+            }
         </div>
     )
 }
@@ -141,6 +142,7 @@ function InputText(props) {
 const mapStateToProps = (state) => {
     return {
         currentChannelId: state.channelsList.selectedChannelId,
+        role: state.authorizationData.role
     }
 }
 
