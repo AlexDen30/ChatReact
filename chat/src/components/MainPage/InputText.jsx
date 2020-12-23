@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react';
 import Fab from '@material-ui/core/Fab';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
 import { Create, Publish } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import { sendMessageThunkCreator} from '../../redux/messages-reducer';
@@ -13,21 +12,17 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import {ChromePicker} from 'react-color';
 
-const useStyles = makeStyles((theme) => ({
 
-
-
-}));
 
 function InputText(props) {
 
-    const classes = useStyles();
 
     const [input, setInput] = useState("");
     const [blockInput, setBlockInput] = useState(true);
     const [file, setFile] = useState(null);
     const [msgColor, setMsgColor] = useState('#20F980');
     const [isOpenColorDialog, setOpenColorDialog] = useState(false);
+
 
     const handleClickOpenColorDialog = () => {
         setOpenColorDialog(true);
@@ -44,26 +39,12 @@ function InputText(props) {
         setInput(value);
     }
 
-    // const handleSendTextMessage = () => {
-    //     let date = new Date();
-    //     let stringToSend = date.getDate() + '.' + (date.getMonth()+1) + '.' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-    //     props.sendMessage(input, stringToSend, props.userName, msgColor);
-    //     setInput("");
-    // }
-
-    // const handleSendFileMessage = () => {
-    //     let date = new Date();
-    //     let stringToSend = date.getDate() + '.' + (date.getMonth()+1) + '.' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-    //     props.sendFile(file, stringToSend, props.userName);
-    //     setInput("");
-    //     setFile(null);
-    // }
-
     const handleSendMessage = () => {
         let date = new Date();
         let dateStringToSend = date.getDate() + '.' + (date.getMonth()+1) + '.' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
         file 
-            ? props.sendMessage(props.currentChannelId, "file", input.slice(0, input.indexOf('(double click here to undo)') - 1), file, msgColor.slice(1), dateStringToSend) 
+            ? props.sendMessage(props.currentChannelId, "file", input.slice(0, input.indexOf('(double click here to undo)') - 1), 
+                                file, msgColor.slice(1), dateStringToSend) 
             : props.sendMessage(props.currentChannelId, "text", input, " ", msgColor.slice(1), dateStringToSend);
         
         setInput("");

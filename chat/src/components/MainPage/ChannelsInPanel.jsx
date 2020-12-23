@@ -13,7 +13,6 @@ import { deleteChannelThunkCreator, leaveChannelThunkCreator, selectChannelAC, s
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import AlertQuestion from '../utilityComponents/AlertQuestion';
-import { useAlertQuestion } from '../hooks/useAlertQuestion';
 
 const useStyles = makeStyles((theme) => ({
     channelItem: {

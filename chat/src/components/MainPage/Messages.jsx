@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { ListSubheader } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { downloadMessageFileThunkCreator, setMessagesThunkCreator } from '../../redux/messages-reducer';
-import GetAppIcon from '@material-ui/icons/GetApp'
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import { addMessegeAC, downloadMessageFileThunkCreator, setMessagesThunkCreator } from '../../redux/messages-reducer';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import { HubConnectionBuilder } from '@aspnet/signalr';
+
+
 
 const useStyles = makeStyles((theme) => ({
     
@@ -36,14 +36,47 @@ const Messages = (props) => {
     
     const classes = useStyles();
 
+    const [ connection, setConnection ] = useState(null);
+
     useEffect(() => {
+
+        const newConnection = new HubConnectionBuilder()
+            .withUrl('https://localhost:44366/Hub')
+            .build();
+            setConnection(newConnection);
+    }, [])
+
+    useEffect(() => {
+
         if (props.countOfChannelMessages > 10){
             props.setMessages(props.currentChannelId,props.countOfChannelMessages - 10, props.countOfChannelMessages)
         } else {
             props.setMessages(props.currentChannelId, 1, props.countOfChannelMessages)
         }
         
+        
+
     }, [props.selectedChID])
+    
+
+    useEffect(() => {
+        if (connection) {
+            connection.start()
+                .then(result => {
+                    console.log('Connected!');
+    
+                    connection.on('newMsg', message => {
+                        
+                        props.reciveMessage(message.channelId, message.type, message.contentText, 
+                            message.contentFile, message.color, message.creationTime, message.senderUserName);
+                        console.log(message);
+                    });
+                })
+                .catch(e => console.log('Connection failed: ', e));
+        }
+    }, [connection]);
+
+    
 
     return (
         <div>      
@@ -103,7 +136,12 @@ const mapDispatchToProps = (dispatch) => {
 
         downloadFile: (messageId, fileName) => {
             downloadMessageFileThunkCreator(messageId, fileName);
-        }
+        },
+
+        reciveMessage: (channelId, type, contentText, contentFile, color, creationTime, senderUserName) => {
+            dispatch(addMessegeAC(channelId, type, contentText, contentFile, color, creationTime, senderUserName));
+        },
+
     }
 }
 

@@ -1,5 +1,6 @@
 import * as axios from 'axios';
 
+
 const instance = axios.create({
     withCredentials: true,
     baseURL: 'https://localhost:44366/api/',
@@ -83,14 +84,6 @@ export const messagesAPI = {
         sendMessageForm.append("color", color);
         sendMessageForm.append("creationTime", creationTime);
 
-        // return axios({
-        //     url: "https://localhost:44366/api/Message",
-        //     method: "POST",
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data'
-        //     },
-        //     data: sendMessageForm
-        // })
         return instance.post('Message', sendMessageForm, {
             headers: {
               'Content-Type': 'multipart/form-data'
@@ -109,5 +102,7 @@ export const messagesAPI = {
         // return instance.get(`Message/download?messageId=${messageId}`, {
         //     responseType: 'arraybuffer'
         // })
-    }
+    },
+
+    
 }

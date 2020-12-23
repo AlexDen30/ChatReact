@@ -1,30 +1,17 @@
 import { messagesAPI } from "../api/api";
 
-const SET_MESSAGES = 'SET_MESSAGES';
-//const GET_MORE_MESSAGES = 'GET_MORE_MESSAGES';
-//const SEND_MESSAGE = 'SEND_MESSAGE';
-//const UPDATE_MESSAGES = 'UPDATE_MESSAGES';
-const ADD_MESSAGE = 'ADD_MESSAGE';
-//const FILE = 'FILE';
 
-// if msg is file bgcolor=lightblue and content is file name
-// to download you chould double click it in chat
+const SET_MESSAGES = 'SET_MESSAGES';
+const ADD_MESSAGE = 'ADD_MESSAGE';
+
 let initialState = {
     channelMessages: [],
-    // channelMessages: [
-    //     {content: 'asdasdas', type: 'text', bgColor: 'default', time: '9:25', id: '0', sender: 'sasha'},
-    //     {content: 'asdasdas', type: 'text', bgColor: 'default', time: '9:25', id: '1', sender: 'current'},
-    //     {content: 'asdasdas', type: 'text', bgColor: 'default', time: '9:25', id: '2', sender: 'sasha'},
-    //     {content: 'asdasdas', type: 'text', bgColor: 'red', time: '9:25', id: '3', sender: 'sasha'},
-    //     {content: 'asdasdas', type: 'text', bgColor: 'default', time: '9:25', id: '4', sender: 'current'},
-    //     {content: 'asdasdas', type: 'text', bgColor: 'green', time: '9:25', id: '5', sender: 'current'},
-    //     {content: 'asdasdas', type: 'text', bgColor: 'default', time: '9:25', id: '6', sender: 'sasha'},
-    // ],
-    //file: null
+    
 }
 
 
-const addMessegeAC = (channelId, type, contentText, contentFile, color, creationTime) => {
+
+export const addMessegeAC = (channelId, type, contentText, contentFile, color, creationTime, senderUserName) => {
     return {
         type: ADD_MESSAGE,
         message: {
@@ -33,24 +20,12 @@ const addMessegeAC = (channelId, type, contentText, contentFile, color, creation
             contentText,
             contentFile,
             color,
-            creationTime
+            creationTime,
+            senderUserName
         }
     }
 }
 
-// const updateMessagesAC = (newMsgs) => {
-//     return {
-//         type: UPDATE_MESSAGES,
-//         newMessages: [...newMsgs]
-//     }
-// }
-
-// const getMoreMessagesAC = (msgs) => {
-//     return {
-//         type: GET_MORE_MESSAGES,
-//         messages: [...msgs]
-//     }
-// }
 
 const setMessagesAC = (channelMessages = initialState.channelMessages) => {
     return {
@@ -58,6 +33,8 @@ const setMessagesAC = (channelMessages = initialState.channelMessages) => {
         channelMessages 
     }
 }
+
+
 
 export const messagesReducer = (state = initialState, action) => {
 
@@ -68,24 +45,6 @@ export const messagesReducer = (state = initialState, action) => {
                 ...state,
                 channelMessages: action.channelMessages
             }
-
-        // case GET_MORE_MESSAGES:
-        //     return {
-        //         ...state,
-        //         channelMessages: [...action.messages].push(...state.channelMessages)
-        //     }
-
-        // case UPDATE_MESSAGES:
-        //     return {
-        //         ...state,
-        //         channelMessages: [...state.channelMessages, action.newMessages]
-        //     }
-
-        // case SEND_MESSAGE:
-        //     return {
-        //         ...state, 
-        //         channelMessages: [...state.channelMessages, action.message]
-        //     }    
         
         case ADD_MESSAGE:
             return {
@@ -93,11 +52,6 @@ export const messagesReducer = (state = initialState, action) => {
                 channelMessages: [...state.channelMessages, action.message]
             }  
 
-        // case FILE:
-        // return {
-        //     ...state, 
-        //     file: action.file
-        // }
         default:
             return state;
     }
@@ -146,20 +100,16 @@ export const updateMessagesThunkCreator = () => (dispatch) => {
     //return dispatch(getMoreMessagesAC(msgs));
 }
 
+
+
 export const sendMessageThunkCreator = (channelId, type, contentText, contentFile, color, creationTime) => (dispatch) => {
-debugger;
+
     messagesAPI.sendMessage(channelId, type, contentText, contentFile, color, creationTime)
         .then(response => {
-            if (response.statusText === 'OK') {
-                dispatch(addMessegeAC(channelId, type, contentText, contentFile, color, creationTime));
-    
-            } else {
+            if (response.statusText !== 'OK') {
                 alert("Sending Error");
             } 
-            
         });
-    //api
-    //dispatch(addMessegeAC(channelId, type, contentText, contentFile, color, creationTime));
 }
 
 export const setMessagesThunkCreator = (channelId, from, to) => (dispatch) => {
@@ -170,7 +120,7 @@ export const setMessagesThunkCreator = (channelId, from, to) => (dispatch) => {
             if (response.statusText === 'OK') {
                 dispatch(setMessagesAC(response.data.messages)); 
             } 
-    
+        
         });
 }
 

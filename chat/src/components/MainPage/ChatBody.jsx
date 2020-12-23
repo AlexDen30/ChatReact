@@ -1,14 +1,11 @@
 import React from 'react';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
 import Messages from './Messages'
 import InputText from './InputText';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import CurrentChannelHeaderContainer from './CurrentChannelHeader';
 
 const useStyles = makeStyles((theme) => ({
