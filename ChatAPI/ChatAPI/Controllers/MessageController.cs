@@ -55,7 +55,8 @@ namespace ChatAPI.Controllers
             msg.SenderId = Convert.ToInt32(Request.Cookies["userId"]);
             messageRep.AddMessage(msg, file);
 
-            await _messageHub.Clients.All.SendAsync("newMsg",messageRep.GetMessage(msg.MessageId));
+            await _messageHub.Clients.All.SendAsync("newMsg",
+                    messageRep.GetMessageByDateAndSenderId(msg.CreationTime, msg.SenderId));
 
             return Ok();
         }

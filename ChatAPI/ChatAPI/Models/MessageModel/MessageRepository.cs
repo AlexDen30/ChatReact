@@ -37,6 +37,25 @@ namespace ChatAPI.Models.MessageModel
             }
         }
 
+        public MessageModel GetMessageByDateAndSenderId(string date, int senderId)
+        {
+            using (OracleConnection db = new OracleConnection(connectionString))
+            {
+                //string sql = "SELECT message_id AS MessageId, channel_id AS ChannelId, type, content_text AS ContentText, content_file AS ContentFile, color, sender_id AS SenderId "
+
+                string sql = "SELECT m.message_id AS MessageId, m.channel_id AS ChannelId, " +
+                    "m.type, m.content_text AS ContentText, " +
+                    "m.color, m.sender_id AS SenderId, " +
+                    "m.creation_time AS CreationTime, m.number_in_chat AS NumberInChat, " +
+                    "u.user_name AS SenderUserName " +
+                    "FROM Messages m INNER JOIN ChatUsers u ON u.user_id = :ID " +
+                    "WHERE creation_time = to_date(:SendDate, \'dd.MM.yyyy hh24:mi:ss\') ";
+
+                db.Open();
+                return db.Query<MessageModel>(sql, new { ID = senderId, SendDate = date}).FirstOrDefault();
+            }
+        }
+
         public IEnumerable<MessageModel> GetAllChannelMessages(int channel_id)
         {
             using (OracleConnection db = new OracleConnection(connectionString))
