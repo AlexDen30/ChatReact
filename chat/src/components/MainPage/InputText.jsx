@@ -20,7 +20,7 @@ function InputText(props) {
     const [input, setInput] = useState("");
     const [blockInput, setBlockInput] = useState(true);
     const [file, setFile] = useState(null);
-    const [msgColor, setMsgColor] = useState('#20F980');
+    const [msgColor, setMsgColor] = useState('#FFFFFF');
     const [isOpenColorDialog, setOpenColorDialog] = useState(false);
 
 

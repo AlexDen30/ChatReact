@@ -3,13 +3,20 @@ import { messagesAPI } from "../api/api";
 
 const SET_MESSAGES = 'SET_MESSAGES';
 const ADD_MESSAGE = 'ADD_MESSAGE';
+const ADD_MESSAGES = 'ADD_MESSAGES';
 
 let initialState = {
     channelMessages: [],
     
 }
 
-
+export const addMessagesAC = (messages) => {
+    
+    return {
+        type: ADD_MESSAGES,
+        messages 
+    }
+}
 
 export const addMessegeAC = (channelId, type, contentText, contentFile, color, creationTime, senderUserName) => {
     return {
@@ -52,6 +59,12 @@ export const messagesReducer = (state = initialState, action) => {
                 channelMessages: [...state.channelMessages, action.message]
             }  
 
+        case ADD_MESSAGES:
+            return {
+                ...state,
+                channelMessages: [...action.messages, ...state.channelMessages]
+            }
+
         default:
             return state;
     }
@@ -90,15 +103,7 @@ export const messagesReducer = (state = initialState, action) => {
 //     dispatch(fileAC(msgContent));
 // }
 
-export const getMoreMessagesThunkCreator = () => (dispatch) => {
-    //api
-    //return dispatch(getMoreMessagesAC(msgs));
-}
 
-export const updateMessagesThunkCreator = () => (dispatch) => {
-    //api
-    //return dispatch(getMoreMessagesAC(msgs));
-}
 
 
 
@@ -116,6 +121,20 @@ export const setMessagesThunkCreator = (channelId, from, to) => (dispatch) => {
 
     //from, to = 0 means that is first msgs download
     messagesAPI.getChannelMsgsBetween(from, to, channelId)
+        .then(response => {
+            if (response.statusText === 'OK') {
+                dispatch(setMessagesAC(response.data.messages)); 
+            } 
+        
+        });
+}
+
+export const getMoreMessagesThunkCreator = (channelId, numOfFirstMsgInClient) => (dispatch) => {
+
+    let howMatchAdd;
+    numOfFirstMsgInClient > 10 ? howMatchAdd = numOfFirstMsgInClient - 10 : howMatchAdd = 1;
+
+    messagesAPI.getChannelMsgsBetween(howMatchAdd, numOfFirstMsgInClient, channelId)
         .then(response => {
             if (response.statusText === 'OK') {
                 dispatch(setMessagesAC(response.data.messages)); 

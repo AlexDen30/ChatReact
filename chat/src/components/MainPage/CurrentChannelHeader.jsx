@@ -42,7 +42,7 @@ const CurrentChannelHeader = (props) => {
                 <Grid item xs={8}>
                     <ListItem key='header' className={classes.headerInfo}>
                         <ListItemText
-                            primary={props.channelName + ' ⋅ ' + props.channelTheme}
+                            primary={props.channelName + ' ⋅ ' + props.channelTheme + ' | totaly ' + props.countOfChannelMessages + ' messages'}
                             secondary={'Created on ' + props.channelCreationTime}
                         />
                     </ListItem>
@@ -84,6 +84,7 @@ const CurrentChannelHeaderContainer = (props) => {
                 channelName={props.channelName}
                 channelCreationTime={props.channelCreationTime}
                 channelTheme={props.channelTheme}
+                countOfChannelMessages={props.countOfChannelMessages}
                 handleLeavingChannel={handleLeavingChannel}
             />
             <Dialog
@@ -112,18 +113,20 @@ const CurrentChannelHeaderContainer = (props) => {
 }
 
 const mapStateToProps = (state) => {
-
+    
     let index;
     if (!state.channelsList.selectedChannelId) {
         return {};
     } else {
         index = state.channelsList.channels.findIndex(ch => ch.channelId === state.channelsList.selectedChannelId)
     }
-
+    
     return {
+        
         channelName: state.channelsList.channels[index].name,
         channelCreationTime: state.channelsList.channels[index].creationTime,
         channelTheme: state.channelsList.channels[index].theme,
+        countOfChannelMessages: state.channelsList.channels[index].countOfMessages,
     }
 }
 

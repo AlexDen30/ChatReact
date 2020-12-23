@@ -6,7 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { ListSubheader } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { addMessegeAC, downloadMessageFileThunkCreator, setMessagesThunkCreator } from '../../redux/messages-reducer';
+import { addMessegeAC, downloadMessageFileThunkCreator, getMoreMessagesThunkCreator, setMessagesThunkCreator } from '../../redux/messages-reducer';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { HubConnectionBuilder } from '@aspnet/signalr';
 
@@ -53,16 +53,14 @@ const Messages = (props) => {
         } else {
             props.setMessages(props.currentChannelId, 1, props.countOfChannelMessages)
         }
-        
-        
-
+  
     }, [props.selectedChID])
     
 
     useEffect(() => {
         if (connection) {
             connection.start()
-                .then(result => {
+                .then(() => {
                     console.log('Connected!');
     
                     connection.on('newMsg', message => {
@@ -81,7 +79,11 @@ const Messages = (props) => {
     return (
         <div>      
             <List className={classes.messageArea}>
-                <ListSubheader component={Button}  className={classes.subheader}>
+                <ListSubheader 
+                    component={Button} 
+                    onClick={() => props.getMoreMessages(props.selectedChID, props.firstMessage.numberInChat)}  
+                    className={classes.subheader}
+                >
                     More Messages
                 </ListSubheader>
                 {
@@ -124,6 +126,7 @@ const mapStateToProps = (state) => {
         messages: state.messagesData.channelMessages,
         currentUserName: state.authorizationData.userName,
         countOfChannelMessages: state.channelsList.channels[index].countOfMessages,
+        firstMessage: state.messagesData.channelMessages[0]
     }
     
 }
@@ -142,6 +145,9 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(addMessegeAC(channelId, type, contentText, contentFile, color, creationTime, senderUserName));
         },
 
+        getMoreMessages: (channelId, numOfFirstMsg) => {
+            dispatch(getMoreMessagesThunkCreator(channelId, numOfFirstMsg));
+        }
     }
 }
 

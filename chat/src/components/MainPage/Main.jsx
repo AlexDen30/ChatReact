@@ -1,6 +1,4 @@
 import React from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import HeaderContainer from './Header';
@@ -17,7 +15,6 @@ const useStyles = makeStyles((theme) => ({
         height:"600px",
         overflow: 'auto',
         borderRadius:"10px",
-        //background: theme.palette.primary.light
     },
 
     paperRight: {
