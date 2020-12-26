@@ -90,6 +90,7 @@ CREATE TABLE User_has_channel (
 
 
 /
+ALTER TABLE ChatUsers MODIFY password VARCHAR2(80);
 
 
 INSERT ALL 
@@ -113,3 +114,11 @@ INSERT ALL
     INTO User_has_channel(user_id, channel_id) VALUES (1,3)
     INTO User_has_channel(user_id, channel_id) VALUES (2,1)
 SELECT * FROM dual;
+
+SELECT m.message_id AS MessageId, m.channel_id AS ChannelId,
+m.type, m.content_text AS ContentText,
+m.color, m.sender_id AS SenderId, 
+m.creation_time AS CreationTime, m.number_in_chat AS NumberInChat, 
+u.user_name AS SenderUserName
+FROM Messages m INNER JOIN ChatUsers u ON u.user_id = 7
+WHERE m.creation_time = to_date('22.12.2020 13:31:29',  'dd.MM.yyyy hh24:mi:ss');
