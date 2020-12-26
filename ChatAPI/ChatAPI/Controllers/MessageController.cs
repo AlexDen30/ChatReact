@@ -6,7 +6,6 @@ using ChatAPI.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Diagnostics.CodeAnalysis;
-using ChatAPI.TimeFeatures;
 using ChatAPI.Models.MessageModel;
 using System.IO;
 
@@ -24,11 +23,6 @@ namespace ChatAPI.Controllers
             _messageHub = messageHub;
             messageRep = new MessageRepository();
         }
-
-        //public IActionResult Get()
-        //{
-        //     var timeManager = new TimeManager(() => _messageHub.Clients.All.SendAsync("transferMessageData", messageRep.GetMessage())
-        //}
 
         [HttpPost]
         public async Task<IActionResult> SendMessage()

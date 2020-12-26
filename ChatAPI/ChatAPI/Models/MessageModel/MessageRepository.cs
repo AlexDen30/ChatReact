@@ -85,7 +85,8 @@ namespace ChatAPI.Models.MessageModel
                     "m.creation_time AS CreationTime, m.number_in_chat AS NumberInChat, " +
                     "u.user_name AS SenderUserName " +
                     "FROM Messages m JOIN ChatUsers u ON m.sender_id = u.user_id " +
-                    "WHERE m.channel_id= :ID AND m.number_in_chat BETWEEN :FIRST AND :LAST";
+                    "WHERE m.channel_id= :ID AND m.number_in_chat BETWEEN :FIRST AND :LAST " +
+                    "ORDER BY m.number_in_chat ASC";
 
                 db.Open();
                 return db.Query<MessageModel>(sql, new { ID = channel_id, FIRST = from, LAST = to });
