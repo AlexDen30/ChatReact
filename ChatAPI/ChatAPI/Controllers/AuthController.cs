@@ -48,6 +48,8 @@ namespace ChatAPI.Controllers
         public void PostUser([FromBody] DataForSignUp data)
         {
             data.User.Role = "user";
+
+            data.Password = BCrypt.Net.BCrypt.HashPassword(data.Password);
            
             usersRep.AddUser(data.User, data.Password);
 
@@ -60,20 +62,20 @@ namespace ChatAPI.Controllers
             public string Password{ get; set; }
         }
 
-        
+
 
         [HttpPost("login", Name = "AuthUser")]
         public IActionResult Login([FromBody] AuthData authData)
         {
+            string passwordHash = usersRep.GetUserPassHashForCompare(authData.Email);
 
-            int reqData = usersRep.GetUserIdForAuth(authData.Email, authData.Password);
-           
-
-            if (reqData == 0)
+            if (passwordHash == "0" || !BCrypt.Net.BCrypt.Verify(authData.Password, passwordHash))
             {
-                return BadRequest(); 
-            }
+                return BadRequest();
+            }             
 
+            int reqData = usersRep.GetUserIdForAuth(authData.Email);
+           
             Response.Cookies.Append("userId", reqData.ToString());
 
             return Ok();

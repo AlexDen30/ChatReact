@@ -49,17 +49,34 @@ namespace ChatAPI.Models.UsersModel
             }
         }
 
-        public int GetUserIdForAuth(string email, string password)
+        public int GetUserIdForAuth(string email)
         {
+            
             using (OracleConnection db = new OracleConnection(connectionString))
             {
                 string sql = "SELECT nvl(user_id, 0) FROM ChatUsers " +
-                    "WHERE email = :Email AND password = :Pass";
+                    "WHERE email = :Email";
                     
-                var param = new { Email = email, Pass = password};
+                var param = new { Email = email };
                 db.Open();
 
                 return db.Query<int>(sql, param).FirstOrDefault();
+            }
+        }
+
+
+        public string GetUserPassHashForCompare(string email)
+        {
+            //select password hash by email then compare password
+            using (OracleConnection db = new OracleConnection(connectionString))
+            {
+                string sql = "SELECT nvl(password, 0) FROM ChatUsers " +
+                    "WHERE email = :Email";
+
+                var param = new { Email = email};
+                db.Open();
+
+                return db.Query<string>(sql, param).FirstOrDefault();
             }
         }
 
