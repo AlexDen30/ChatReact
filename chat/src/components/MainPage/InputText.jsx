@@ -40,6 +40,7 @@ function InputText(props) {
     }
 
     const handleSendMessage = () => {
+        debugger;
         let date = new Date();
         let dateStringToSend = date.getDate() + '.' + (date.getMonth()+1) + '.' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
         file 

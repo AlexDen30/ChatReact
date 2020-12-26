@@ -133,11 +133,11 @@ export const getMoreMessagesThunkCreator = (channelId, numOfFirstMsgInClient) =>
 
     let howMatchAdd;
     numOfFirstMsgInClient > 10 ? howMatchAdd = numOfFirstMsgInClient - 10 : howMatchAdd = 1;
-
+    
     messagesAPI.getChannelMsgsBetween(howMatchAdd, numOfFirstMsgInClient, channelId)
         .then(response => {
             if (response.statusText === 'OK') {
-                dispatch(setMessagesAC(response.data.messages)); 
+                dispatch(addMessagesAC(response.data.messages)); 
             } 
         
         });

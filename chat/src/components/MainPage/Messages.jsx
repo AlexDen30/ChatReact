@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -40,7 +40,7 @@ const Messages = (props) => {
 
     useEffect(() => {
 
-        const newConnection = new HubConnectionBuilder()
+        const newConnection = new HubConnectionBuilder() 
             .withUrl('https://localhost:44366/Hub')
             .build();
             setConnection(newConnection);
@@ -53,7 +53,7 @@ const Messages = (props) => {
         } else {
             props.setMessages(props.currentChannelId, 1, props.countOfChannelMessages)
         }
-  
+        console.log(props.selectedChID);
     }, [props.selectedChID])
     
 
@@ -70,9 +70,9 @@ const Messages = (props) => {
                         console.log(message);
                     });
                 })
-                .catch(e => console.log('Connection failed: ', e));
+                .catch(e => console.log('Connection failed: ', e)); 
         }
-    }, [connection]);
+    },[connection]);
 
     
 
