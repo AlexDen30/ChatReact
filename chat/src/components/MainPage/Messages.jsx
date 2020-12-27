@@ -64,9 +64,9 @@ const Messages = (props) => {
                     console.log('Connected!');
     
                     connection.on('newMsg', message => {
-                        
-                        props.reciveMessage(message.channelId, message.type, message.contentText, 
-                            message.contentFile, message.color, message.creationTime, message.senderUserName);
+                       //messageId, channelId, type, contentText, color, senderId, creationTime, numberInChat, senderUserName 
+                        props.reciveMessage(message.messageId, message.channelId, message.type, message.contentText, 
+                            message.color, message.senderId, message.creationTime, message.numberInChat, message.senderUserName);
                         console.log(message);
                     });
                 })
@@ -93,7 +93,7 @@ const Messages = (props) => {
                             {msg.type === "file" 
                                 && <GetAppIcon  
                                        onDoubleClick={msg.type === "file" &&  props.role !== "guest"
-                                        ? () => props.downloadFile(msg.messageId, msg.contentText) 
+                                        ? () => {props.downloadFile(msg.messageId, msg.contentText);debugger; }
                                         : ()=>{} }
                                     /> 
                             }
@@ -144,8 +144,8 @@ const mapDispatchToProps = (dispatch) => {
             downloadMessageFileThunkCreator(messageId, fileName);
         },
 
-        reciveMessage: (channelId, type, contentText, contentFile, color, creationTime, senderUserName) => {
-            dispatch(addMessegeAC(channelId, type, contentText, contentFile, color, creationTime, senderUserName));
+        reciveMessage: (messageId, channelId, type, contentText, color, senderId, creationTime, numberInChat, senderUserName) => {
+            dispatch(addMessegeAC(messageId, channelId, type, contentText, color, senderId, creationTime, numberInChat, senderUserName));
         },
 
         getMoreMessages: (channelId, numOfFirstMsg) => {

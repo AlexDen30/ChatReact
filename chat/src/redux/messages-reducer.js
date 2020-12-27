@@ -18,16 +18,18 @@ export const addMessagesAC = (messages) => {
     }
 }
 
-export const addMessegeAC = (channelId, type, contentText, contentFile, color, creationTime, senderUserName) => {
+export const addMessegeAC = (messageId, channelId, type, contentText, color, senderId, creationTime, numberInChat, senderUserName) => {
     return {
         type: ADD_MESSAGE,
         message: {
+            messageId,
             channelId,
             type,
             contentText,
-            contentFile,
             color,
+            senderId,
             creationTime,
+            numberInChat,
             senderUserName
         }
     }
@@ -71,41 +73,6 @@ export const messagesReducer = (state = initialState, action) => {
 }
 
 
-// export const sendMessageThunkCreator = (msgContent, sendTime, sender, bgColor) => (dispatch) => {
-//     //api post if successed
-//     let msgId;
-//     if (initialState.channelMessages.length == 0) {
-//         msgId = 0;
-//     } else {
-//         msgId = initialState.channelMessages[initialState.channelMessages.length - 1].id + 1;
-//     }
-   
-//     dispatch(sendMessageAC(msgContent, 'text', bgColor, sendTime, msgId, sender));
-// }
-
-// const fileAC = (file) => {
-//     return {
-//         type: FILE,
-//         file
-//     }
-// }
-
-// export const uploadThunkCreator = (msgContent, sendTime, sender) => (dispatch) => {
-//     //api post if successed
-//     let msgId;
-//     if (initialState.channelMessages.length == 0) {
-//         msgId = 0;
-//     } else {
-//         msgId = initialState.channelMessages[initialState.channelMessages.length - 1].id + 1;
-//     }
-   
-//     dispatch(sendMessageAC(msgContent.name, 'file', 'aquamarine', sendTime, msgId, sender));
-//     dispatch(fileAC(msgContent));
-// }
-
-
-
-
 
 export const sendMessageThunkCreator = (channelId, type, contentText, contentFile, color, creationTime) => (dispatch) => {
 
@@ -144,7 +111,6 @@ export const getMoreMessagesThunkCreator = (channelId, numOfFirstMsgInClient) =>
 }
 
 export const downloadMessageFileThunkCreator = (messageId, fileName) => {
-
     messagesAPI.downloadMessageFile(messageId)
         .then(response => {
             if (response.statusText === 'OK') {
