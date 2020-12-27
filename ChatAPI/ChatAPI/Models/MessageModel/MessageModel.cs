@@ -27,4 +27,11 @@ namespace ChatAPI.Models.MessageModel
 
         public string SenderUserName { get; set; }
     }
+
+    public class DownloadFileModel
+    {
+        public byte[] ByteArray { get; set; }
+
+        public string FileName { get; set; }
+    }
 }

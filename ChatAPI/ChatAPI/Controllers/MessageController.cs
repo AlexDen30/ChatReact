@@ -55,10 +55,15 @@ namespace ChatAPI.Controllers
             return Ok();
         }
 
+
+        
+
         [HttpGet("download", Name = "DownloadMessageFile")]
-        public byte[] GetFile([FromQuery(Name = "messageId")] int msgId)
+        public FileResult GetFile([FromQuery(Name = "messageId")] int msgId)
         {
-            return messageRep.GetMessageFile(msgId);
+            DownloadFileModel file = new DownloadFileModel();
+            file = messageRep.GetMessageFile(msgId);
+            return File(file.ByteArray, "file"+ "/" + file.FileName.Substring(file.FileName.IndexOf(".")+1), file.FileName);
         }
 
 

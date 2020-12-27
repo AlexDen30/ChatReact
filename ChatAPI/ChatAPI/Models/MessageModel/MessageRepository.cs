@@ -93,15 +93,16 @@ namespace ChatAPI.Models.MessageModel
             }
         }
 
-        public byte[] GetMessageFile(int messageId)
+        public DownloadFileModel GetMessageFile(int messageId)
         {
             using (OracleConnection db = new OracleConnection(connectionString))
             {
 
-                string sql = "SELECT content_file FROM Messages WHERE message_id = :ID";
+                string sql = "SELECT content_file AS ByteArray, content_text AS FileName " +
+                    "FROM Messages WHERE message_id = :ID";
 
                 db.Open();
-                return db.Query<byte[]>(sql, new { ID = messageId}).FirstOrDefault();
+                return db.Query<DownloadFileModel>(sql, new { ID = messageId}).FirstOrDefault();
             }
         }
 
