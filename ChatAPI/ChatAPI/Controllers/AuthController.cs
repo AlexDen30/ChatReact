@@ -20,7 +20,7 @@ namespace ChatAPI.Controllers
             usersRep = usersR;
         }
 
-        
+        //not for the client app
         [HttpGet(Name = "GetAllUsers")]
         public IEnumerable<UsersModel> Get()
         {

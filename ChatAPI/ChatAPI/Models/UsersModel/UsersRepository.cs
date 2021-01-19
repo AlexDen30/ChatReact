@@ -64,6 +64,21 @@ namespace ChatAPI.Models.UsersModel
             }
         }
 
+        public string GetUserRoleById(int id)
+        {
+
+            using (OracleConnection db = new OracleConnection(connectionString))
+            {
+                string sql = "SELECT nvl(role, 0) FROM ChatUsers " +
+                    "WHERE user_id = :ID";
+
+                var param = new { ID = id };
+                db.Open();
+
+                return db.Query<string>(sql, param).FirstOrDefault();
+            }
+        }
+
 
         public string GetUserPassHashForCompare(string email)
         {

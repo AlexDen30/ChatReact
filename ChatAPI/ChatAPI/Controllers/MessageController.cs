@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.SignalR;
 using System.Diagnostics.CodeAnalysis;
 using ChatAPI.Models.MessageModel;
 using System.IO;
+using ChatAPI.Filters;
 
 namespace ChatAPI.Controllers
 {
@@ -25,6 +26,7 @@ namespace ChatAPI.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(UserAuthorizationFilter))]
         public async Task<IActionResult> SendMessage()
         {
             MessageModel msg = new MessageModel();
@@ -59,6 +61,7 @@ namespace ChatAPI.Controllers
         
 
         [HttpGet("download", Name = "DownloadMessageFile")]
+        [ServiceFilter(typeof(UserAuthorizationFilter))]
         public FileResult GetFile([FromQuery(Name = "messageId")] int msgId)
         {
             DownloadFileModel file = new DownloadFileModel();
@@ -76,6 +79,7 @@ namespace ChatAPI.Controllers
         }
 
         [HttpGet("between/{channelId}", Name = "GetChannelMessagesBetween")]
+        [ServiceFilter(typeof(UserAuthorizationFilter))]
         public ObjectResult GetChannelMessagesBetween(int channelId, 
             [FromQuery(Name = "from")] int from, [FromQuery(Name = "to")] int to)
         {

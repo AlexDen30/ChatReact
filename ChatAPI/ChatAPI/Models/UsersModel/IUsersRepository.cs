@@ -13,6 +13,8 @@ namespace ChatAPI.Models.UsersModel
 
         public int GetUserIdForAuth(string email);
 
+        public string GetUserRoleById(int id);
+
         public string GetUserPassHashForCompare(string email);
 
         public void AddUser(UsersModel user, string password);

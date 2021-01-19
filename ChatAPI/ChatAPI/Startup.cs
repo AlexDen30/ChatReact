@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using ChatAPI.Dependency;
+using ChatAPI.Filters;
 using ChatAPI.Hubs;
 using ChatAPI.Models.ChannelsModel;
 using Microsoft.AspNetCore.Builder;
@@ -39,7 +40,9 @@ namespace ChatAPI
 
             services.AddOptions();
 
-           
+            services.AddScoped<AdminAuthorizationFilter>();
+
+            services.AddScoped<UserAuthorizationFilter>();
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
