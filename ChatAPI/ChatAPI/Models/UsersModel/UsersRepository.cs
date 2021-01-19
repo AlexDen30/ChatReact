@@ -9,14 +9,14 @@ using Dapper;
 
 namespace ChatAPI.Models.UsersModel
 {
-    public class UsersRepository
+    public class UsersRepository : IUsersRepository
     {
 
         readonly string connectionString = null;
 
-        public UsersRepository()
+        public UsersRepository(string dbConnectionString)
         {
-            connectionString = " Data Source= localhost:1521/xe; User Id=chatDev; Password=123;";
+            connectionString = dbConnectionString;
         }
 
         public IEnumerable<UsersModel> GetUsers()

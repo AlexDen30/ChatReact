@@ -13,11 +13,11 @@ namespace ChatAPI.Controllers
     public class AuthController : ControllerBase
     {
 
-        private readonly UsersRepository usersRep;
+        private readonly IUsersRepository usersRep;
 
-        public AuthController()
+        public AuthController(IUsersRepository usersR)
         {
-            usersRep = new UsersRepository();
+            usersRep = usersR;
         }
 
         

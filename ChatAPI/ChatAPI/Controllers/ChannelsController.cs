@@ -13,11 +13,11 @@ namespace ChatAPI.Controllers
     public class ChannelsController : ControllerBase
     {
         
-        private readonly ChannelsRepository channelsRep;
+        private readonly IChannelRepository channelsRep;
 
-        public ChannelsController()
+        public ChannelsController(IChannelRepository channelsR)
         {
-            channelsRep = new ChannelsRepository();
+            channelsRep = channelsR;
         }
 
         public class ChannelsWrapper

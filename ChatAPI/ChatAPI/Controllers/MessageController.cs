@@ -16,12 +16,12 @@ namespace ChatAPI.Controllers
     public class MessageController : Controller
     {
         protected readonly IHubContext<MessageHub> _messageHub;
-        private readonly MessageRepository messageRep;
+        private readonly IMessageRepository messageRep;
 
-        public MessageController([NotNull] IHubContext<MessageHub> messageHub)
+        public MessageController([NotNull] IHubContext<MessageHub> messageHub, IMessageRepository messageR)
         {
             _messageHub = messageHub;
-            messageRep = new MessageRepository();
+            messageRep = messageR;
         }
 
         [HttpPost]

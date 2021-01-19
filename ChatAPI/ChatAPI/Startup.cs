@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using ChatAPI.Dependency;
 using ChatAPI.Hubs;
+using ChatAPI.Models.ChannelsModel;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,15 +37,21 @@ namespace ChatAPI
 
             services.AddCors();
 
-            //services.addpol
-            //services.AddSpaStaticFiles()
+            services.AddOptions();
+
+           
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterModule(new DependencyRegister(Configuration.GetConnectionString("DefaultConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors(options => options
-                .WithOrigins("http://localhost:3000")
+                .WithOrigins(Configuration.GetConnectionString("Front"))
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials()

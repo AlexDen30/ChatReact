@@ -9,13 +9,13 @@ using Dapper;
 
 namespace ChatAPI.Models.ChannelsModel
 {
-    public class ChannelsRepository
+    public class ChannelsRepository : IChannelRepository
     {
         string connectionString = null;
 
-        public ChannelsRepository()
+        public ChannelsRepository(string dbConnectionString)
         {
-            connectionString = " Data Source= localhost:1521/xe; User Id=chatDev; Password=123;";
+            connectionString = dbConnectionString;
         }
 
         public IEnumerable<ChannelsModel> GetUserChannels(int userId)

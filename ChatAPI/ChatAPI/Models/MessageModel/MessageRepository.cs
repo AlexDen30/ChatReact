@@ -9,13 +9,13 @@ using Dapper;
 
 namespace ChatAPI.Models.MessageModel
 {
-    public class MessageRepository
+    public class MessageRepository : IMessageRepository
     {
         string connectionString = null;
 
-        public MessageRepository()
+        public MessageRepository(string dbConnectionString)
         {
-            connectionString = " Data Source= localhost:1521/xe; User Id=chatDev; Password=123;";
+            connectionString = dbConnectionString;
         }
 
         public MessageModel GetMessage(int messageId)
