@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ChatAPI.Models.UsersModel;
 using Microsoft.Extensions.Logging;
+using ChatAPI.UsersDataEncrAndDec;
+using System.Text;
+using ChatAPI.Models.KeyAndVectorModel;
+using System.Security.Cryptography;
 
 namespace ChatAPI.Controllers
 {
@@ -15,11 +19,13 @@ namespace ChatAPI.Controllers
     {
         private readonly ILogger _logger;
         private readonly IUsersRepository usersRep;
+        private readonly IKeyAndVectorRepository keyAndVectorRep;
 
-        public AuthController(IUsersRepository usersR, ILogger<AuthController> logger)
+        public AuthController(IUsersRepository usersR, ILogger<AuthController> logger, IKeyAndVectorRepository kvR)
         {
             _logger = logger;
             usersRep = usersR;
+            keyAndVectorRep = kvR;
         }
 
         //not for the client app
@@ -40,7 +46,17 @@ namespace ChatAPI.Controllers
 
             _logger.LogInformation("Got user id : " + id.ToString());
 
-            return usersRep.GetUser(id);
+            UsersModel fromDb = usersRep.GetUser(id);
+
+            KeyAndVectorModel kav = keyAndVectorRep.GetKeyAndVector();
+            
+
+            byte[] arrFirstName = Encoding.UTF8.GetBytes(fromDb.FirstName);
+            byte[] arrSecondName = Encoding.UTF8.GetBytes(fromDb.SecondName);
+            fromDb.FirstName = AesEncrDecr.DecryptStringFromBytes_Aes(arrFirstName, kav.key, kav.iv);
+            fromDb.SecondName = AesEncrDecr.DecryptStringFromBytes_Aes(arrSecondName, kav.key, kav.iv);
+
+            return fromDb;
         }
 
 
@@ -57,7 +73,20 @@ namespace ChatAPI.Controllers
             data.User.Role = "user";
 
             data.Password = BCrypt.Net.BCrypt.HashPassword(data.Password);
-           
+
+            KeyAndVectorModel kav = keyAndVectorRep.GetKeyAndVector();
+            if (kav.key == null & kav.iv == null)
+            {
+                Aes myAes = Aes.Create();
+                kav.key = myAes.Key;
+                kav.iv = myAes.IV;
+                keyAndVectorRep.SetKeyAndVector(kav);
+            }
+
+            data.User.FirstName = Encoding.UTF8.GetString(AesEncrDecr.EncryptStringToBytes_Aes(data.User.FirstName, kav.key, kav.iv));
+            data.User.SecondName = Encoding.UTF8.GetString((AesEncrDecr.EncryptStringToBytes_Aes(data.User.SecondName, kav.key, kav.iv)));
+            
+
             usersRep.AddUser(data.User, data.Password);
 
             _logger.LogInformation("User with name " + data.User.UserName + " Signed up");

@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using ChatAPI.Models.ChannelsModel;
+using ChatAPI.Models.KeyAndVectorModel;
 using ChatAPI.Models.MessageModel;
 using ChatAPI.Models.UsersModel;
 using System;
@@ -31,6 +32,11 @@ namespace ChatAPI.Dependency
 
             builder.RegisterType<UsersRepository>()
                 .As<IUsersRepository>()
+                .WithParameter("dbConnectionString", dbString)
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<KeyAndVectorRepository>()
+                .As<IKeyAndVectorRepository>()
                 .WithParameter("dbConnectionString", dbString)
                 .InstancePerLifetimeScope();
 
