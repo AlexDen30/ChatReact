@@ -9,6 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 using ChatAPI.Models.MessageModel;
 using System.IO;
 using ChatAPI.Filters;
+using Microsoft.Extensions.Logging;
 
 namespace ChatAPI.Controllers
 {
@@ -18,9 +19,11 @@ namespace ChatAPI.Controllers
     {
         protected readonly IHubContext<MessageHub> _messageHub;
         private readonly IMessageRepository messageRep;
+        private readonly ILogger _logger;
 
-        public MessageController([NotNull] IHubContext<MessageHub> messageHub, IMessageRepository messageR)
+        public MessageController([NotNull] IHubContext<MessageHub> messageHub, IMessageRepository messageR, ILogger<AuthController> logger)
         {
+            _logger = logger;
             _messageHub = messageHub;
             messageRep = messageR;
         }
@@ -54,6 +57,7 @@ namespace ChatAPI.Controllers
             await _messageHub.Clients.All.SendAsync("newMsg",
                     messageRep.GetMessageByDateAndSenderId(msg.CreationTime, msg.SenderId));
 
+            _logger.LogInformation("Message in channel with id " + msg.ChannelId.ToString() + " sended ");
             return Ok();
         }
 
@@ -66,6 +70,8 @@ namespace ChatAPI.Controllers
         {
             DownloadFileModel file = new DownloadFileModel();
             file = messageRep.GetMessageFile(msgId);
+
+            _logger.LogInformation("Message file with id " + msgId.ToString() + " downloaded ");
             return File(file.ByteArray, "file"+ "/" + file.FileName.Substring(file.FileName.IndexOf(".")+1), file.FileName);
         }
 
@@ -84,6 +90,7 @@ namespace ChatAPI.Controllers
             [FromQuery(Name = "from")] int from, [FromQuery(Name = "to")] int to)
         {
 
+            _logger.LogInformation("Messages from channel with id" + channelId.ToString() + "recived");
             return new ObjectResult( new { messages = messageRep.GetChannelMessagesBetween(channelId, from, to) });
         }
 

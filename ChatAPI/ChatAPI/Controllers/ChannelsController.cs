@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ChatAPI.Models.ChannelsModel;
 using ChatAPI.Filters;
+using Microsoft.Extensions.Logging;
 
 namespace ChatAPI.Controllers
 {
@@ -15,9 +16,11 @@ namespace ChatAPI.Controllers
     {
         
         private readonly IChannelRepository channelsRep;
+        private readonly ILogger _logger;
 
-        public ChannelsController(IChannelRepository channelsR)
+        public ChannelsController(IChannelRepository channelsR, ILogger<AuthController> logger)
         {
+            _logger = logger;
             channelsRep = channelsR;
         }
 
@@ -35,6 +38,7 @@ namespace ChatAPI.Controllers
             ChannelsWrapper res = new ChannelsWrapper();
 
             res.Channels = channelsRep.GetUserChannels(userId);
+            _logger.LogInformation("User with id " + userId.ToString() + " has got his channels" );
             return res;
         }
 
@@ -68,6 +72,7 @@ namespace ChatAPI.Controllers
         {
             int createdChId = channelsRep.AddChannel(data.Name, data.Theme, data.CreationTime);
 
+            _logger.LogInformation("New channel created id: " + createdChId.ToString());
             return new ObjectResult(new { channelId = createdChId });
 
         }
@@ -78,6 +83,7 @@ namespace ChatAPI.Controllers
         [ServiceFilter(typeof(AdminAuthorizationFilter))]
         public void Delete(int id)
         {
+            _logger.LogInformation("Channel deleted, channel id " + id.ToString());
             channelsRep.DeleteChannel(id);
         }
 
@@ -90,6 +96,7 @@ namespace ChatAPI.Controllers
         {
             int userId = Convert.ToInt32(Request.Cookies["userId"]);
 
+            _logger.LogInformation("User with id " + userId.ToString() + "Joined to channel with id " + channelId.ToString());
             channelsRep.UserJoinChannel(channelId, userId);
         }
 
@@ -101,6 +108,7 @@ namespace ChatAPI.Controllers
         {
             int userId = Convert.ToInt32(Request.Cookies["userId"]);
 
+            _logger.LogInformation("User with id " + userId.ToString() + "Leave channel with id " + channelId.ToString());
             channelsRep.UserLeaveChannel(channelId, userId);
         }
     }

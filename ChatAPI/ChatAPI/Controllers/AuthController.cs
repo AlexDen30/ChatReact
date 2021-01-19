@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ChatAPI.Models.UsersModel;
+using Microsoft.Extensions.Logging;
 
 namespace ChatAPI.Controllers
 {
@@ -12,11 +13,12 @@ namespace ChatAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-
+        private readonly ILogger _logger;
         private readonly IUsersRepository usersRep;
 
-        public AuthController(IUsersRepository usersR)
+        public AuthController(IUsersRepository usersR, ILogger<AuthController> logger)
         {
+            _logger = logger;
             usersRep = usersR;
         }
 
@@ -24,6 +26,9 @@ namespace ChatAPI.Controllers
         [HttpGet(Name = "GetAllUsers")]
         public IEnumerable<UsersModel> Get()
         {
+            _logger.LogInformation("Start : Getting users");
+            
+
             return usersRep.GetUsers();
         }
 
@@ -32,6 +37,8 @@ namespace ChatAPI.Controllers
         public UsersModel GetUserData()
         {
             int id = Convert.ToInt32(Request.Cookies["userId"]);
+
+            _logger.LogInformation("Got user id : " + id.ToString());
 
             return usersRep.GetUser(id);
         }
@@ -53,6 +60,8 @@ namespace ChatAPI.Controllers
            
             usersRep.AddUser(data.User, data.Password);
 
+            _logger.LogInformation("User with name " + data.User.UserName + " Signed up");
+
         }
 
         public class AuthData
@@ -71,6 +80,7 @@ namespace ChatAPI.Controllers
 
             if (passwordHash == "0" || !BCrypt.Net.BCrypt.Verify(authData.Password, passwordHash))
             {
+                _logger.LogInformation("User with email " + authData.Email + " Signed in");
                 return BadRequest();
             }             
 
@@ -78,12 +88,14 @@ namespace ChatAPI.Controllers
            
             Response.Cookies.Append("userId", reqData.ToString());
 
+            _logger.LogInformation("User with email " + authData.Email + " Signed in");
             return Ok();
         }
 
         [HttpDelete("logout", Name = "LogoutUser")]
         public void Logout()
         {
+            _logger.LogInformation("User with id " + Request.Cookies["userId"] + " loged out");
             Response.Cookies.Delete("userId");
         }
 
@@ -95,6 +107,7 @@ namespace ChatAPI.Controllers
             if (value == "user" || value == "admin")
             {
                 usersRep.UpdateUserRole(value, id);
+                _logger.LogInformation("User with id " + id.ToString() + " role is " + value);
             }
         }
 
@@ -102,6 +115,7 @@ namespace ChatAPI.Controllers
         [HttpDelete("{id}", Name = "DeleteUser")]
         public void Delete(int id)
         {
+            _logger.LogInformation("User with id " + id.ToString() + " deleted");
             usersRep.DeleteUser(id);
         }
     }
