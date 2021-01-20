@@ -100,7 +100,7 @@ namespace ChatAPI.Models.UsersModel
             using (OracleConnection db = new OracleConnection(connectionString))
             {
                 string sql = "INSERT INTO ChatUsers(user_name, email, password, role, first_name, second_name, birth_date) " +
-                    "VALUES(:UserName,:Email ,:Password ,:Role ,:FirstName ,:SecondName , to_date(:BirthDate, \'dd.MM.yyyy\'))";
+                    "VALUES(:UserName,:Email ,:Password ,:Role ,:FirstName ,:SecondName , :BirthDate)";
 
                 
                 db.Open();

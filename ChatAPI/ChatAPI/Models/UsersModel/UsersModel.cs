@@ -15,10 +15,10 @@ namespace ChatAPI.Models.UsersModel
 
         public string Role { get; set; }
 
-        public string FirstName { get; set; }
+        public byte[] FirstName { get; set; }
 
-        public string SecondName { get; set; }
+        public byte[] SecondName { get; set; }
 
-        public string BirthDate{ get; set; }
+        public byte[] BirthDate { get; set; }
     }
 }

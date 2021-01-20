@@ -38,9 +38,21 @@ namespace ChatAPI.Controllers
             return usersRep.GetUsers();
         }
 
-        
+        public class UserClientModel
+        {
+            public string UserName { get; set; }
+
+            public string Email { get; set; }
+
+            public string Role { get; set; }
+            public string FirstName { get; set; }
+
+            public string SecondName { get; set; }
+
+            public string BirthDate { get; set; }
+        }
         [HttpGet("me", Name = "GetUserData")]
-        public UsersModel GetUserData()
+        public UserClientModel GetUserData()
         {
             int id = Convert.ToInt32(Request.Cookies["userId"]);
 
@@ -49,20 +61,22 @@ namespace ChatAPI.Controllers
             UsersModel fromDb = usersRep.GetUser(id);
 
             KeyAndVectorModel kav = keyAndVectorRep.GetKeyAndVector();
-            
 
-            byte[] arrFirstName = Encoding.UTF8.GetBytes(fromDb.FirstName);
-            byte[] arrSecondName = Encoding.UTF8.GetBytes(fromDb.SecondName);
-            fromDb.FirstName = AesEncrDecr.DecryptStringFromBytes_Aes(arrFirstName, kav.key, kav.iv);
-            fromDb.SecondName = AesEncrDecr.DecryptStringFromBytes_Aes(arrSecondName, kav.key, kav.iv);
+            UserClientModel toClient = new UserClientModel();
+            toClient.Email = fromDb.Email;
+            toClient.Role = fromDb.Role;
+            toClient.UserName = fromDb.UserName;
+            toClient.FirstName = AesEncrDecr.DecryptStringFromBytes_Aes(fromDb.FirstName, kav.key, kav.iv);
+            toClient.SecondName = AesEncrDecr.DecryptStringFromBytes_Aes(fromDb.SecondName, kav.key, kav.iv);
+            toClient.BirthDate = AesEncrDecr.DecryptStringFromBytes_Aes(fromDb.BirthDate, kav.key, kav.iv);
 
-            return fromDb;
+            return toClient;
         }
 
 
         public class DataForSignUp
         {
-            public UsersModel User{ get; set; }
+            public UserClientModel User { get; set; }
 
             public string Password{ get; set; }
         }
@@ -83,11 +97,17 @@ namespace ChatAPI.Controllers
                 keyAndVectorRep.SetKeyAndVector(kav);
             }
 
-            data.User.FirstName = Encoding.UTF8.GetString(AesEncrDecr.EncryptStringToBytes_Aes(data.User.FirstName, kav.key, kav.iv));
-            data.User.SecondName = Encoding.UTF8.GetString((AesEncrDecr.EncryptStringToBytes_Aes(data.User.SecondName, kav.key, kav.iv)));
-            
+            UsersModel toDb = new UsersModel();
 
-            usersRep.AddUser(data.User, data.Password);
+            toDb.Role = data.User.Role;
+            toDb.UserName = data.User.UserName;
+            toDb.Email = data.User.Email;
+            toDb.FirstName= AesEncrDecr.EncryptStringToBytes_Aes(data.User.FirstName, kav.key, kav.iv);
+            toDb.SecondName = AesEncrDecr.EncryptStringToBytes_Aes(data.User.SecondName, kav.key, kav.iv);
+            toDb.BirthDate = AesEncrDecr.EncryptStringToBytes_Aes(data.User.BirthDate, kav.key, kav.iv);
+
+
+            usersRep.AddUser(toDb, data.Password);
 
             _logger.LogInformation("User with name " + data.User.UserName + " Signed up");
 

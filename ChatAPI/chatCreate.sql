@@ -14,11 +14,11 @@ CREATE TABLE ChatUsers (
 	user_id INT NOT NULL,
 	user_name VARCHAR2(40) NOT NULL,
 	email VARCHAR2(30) NOT NULL,
-	password VARCHAR2(10) NOT NULL,
+	password VARCHAR2(100) NOT NULL,
 	role VARCHAR2(10) NOT NULL,
-    first_name VARCHAR2(20) NOT NULL,
-    second_name VARCHAR2(20) NOT NULL,
-    birth_date DATE NOT NULL,
+    first_name BLOB NOT NULL,
+    second_name BLOB NOT NULL,
+    birth_date BLOB NOT NULL,
 	constraint USERS_PK PRIMARY KEY (user_id)
     );
 
@@ -90,17 +90,10 @@ CREATE TABLE User_has_channel (
 
 
 /
-ALTER TABLE ChatUsers MODIFY password VARCHAR2(80);
 
 
-INSERT ALL 
-    INTO chatusers(user_name, email, password, role, first_name, second_name, birth_date) 
-        VALUES ('sadsa', 'sdasd@sad.ew', 'asda', 'qwewq', 'qwdqwd', 'qwq',to_date('12.04.1986', 'dd.MM.yyyy'))
-    INTO chatusers(user_name, email, password, role, first_name, second_name, birth_date) 
-        VALUES ('rrhre', 'rthres@sad.ew', 'hghgf', 'fgfg', 'fgfgh', 'efe',to_date('30.07.1977', 'dd.MM.yyyy'))
-    INTO chatusers(user_name, email, password, role, first_name, second_name, birth_date) 
-        VALUES ('df', 'dfeerge@sad.ew', 'uiku', 'ilii', 'klkkj', ',jkj,',to_date('10.04.1944', 'dd.MM.yyyy'))
-SELECT * FROM dual;
+
+
 
 INSERT ALL
     INTO Channels(name, theme, creation_time) VALUES ('asqqq', 'qwdqw', to_date('10.04.1974 12:22:00', 'dd.MM.yyyy hh24:mi:ss'))
@@ -122,3 +115,11 @@ m.creation_time AS CreationTime, m.number_in_chat AS NumberInChat,
 u.user_name AS SenderUserName
 FROM Messages m INNER JOIN ChatUsers u ON u.user_id = 7
 WHERE m.creation_time = to_date('22.12.2020 13:31:29',  'dd.MM.yyyy hh24:mi:ss');
+
+
+CREATE TABLE AesInfo (
+    identify VARCHAR2(10),
+	key BLOB,
+	iv BLOB
+    )
+

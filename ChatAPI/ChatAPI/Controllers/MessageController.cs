@@ -85,7 +85,6 @@ namespace ChatAPI.Controllers
         }
 
         [HttpGet("between/{channelId}", Name = "GetChannelMessagesBetween")]
-        [ServiceFilter(typeof(UserAuthorizationFilter))]
         public ObjectResult GetChannelMessagesBetween(int channelId, 
             [FromQuery(Name = "from")] int from, [FromQuery(Name = "to")] int to)
         {
