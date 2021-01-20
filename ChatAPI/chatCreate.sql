@@ -121,5 +121,16 @@ CREATE TABLE AesInfo (
     identify VARCHAR2(10),
 	key BLOB,
 	iv BLOB
-    )
+    );
+    
+CREATE TABLE log (
+   Datetime timestamp(3),
+   Thread varchar2(255),
+   Log_Level varchar2(255),
+   Logger varchar2(255),
+   Message varchar2(4000)
+   );
+           
+    
+
 
