@@ -1,5 +1,3 @@
-//import { authAPI } from "../api/api";
-//import { stopSubmit } from 'redux-form';
 
 import { authAPI } from "../api/api";
 
